@@ -31,3 +31,7 @@ build/
 
 ### VS Code ###
 .vscode/
+
+# Angular workspace caches & dependencies
+micro-ui/.angular/
+micro-ui/node_modules/

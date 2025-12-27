@@ -1,6 +1,7 @@
 package com.micro.account.service.impl;
 
 import com.micro.account.dto.*;
+import com.micro.account.embedded.CommonProfileInfo;
 import com.micro.account.entity.Account;
 import com.micro.account.entity.DoctorantProfile;
 import com.micro.account.entity.EncadrantProfile;
@@ -34,10 +35,10 @@ public class ProfileServiceImpl implements ProfileService {
                 .orElseThrow(() -> new IllegalArgumentException("Compte introuvable."));
 
         if (acc.getPrimaryRole() != Role.DOCTORANT) {
-            throw new IllegalStateException("R?le incompatible: DOCTORANT requis.");
+            throw new IllegalStateException("Role incompatible: DOCTORANT requis.");
         }
         if (doctorantProfileRepository.existsByAccount_Id(acc.getId())) {
-            throw new IllegalStateException("Profil doctorant d?j? existant.");
+            throw new IllegalStateException("Profil doctorant deja existant.");
         }
 
         DoctorantProfile entity = doctorantProfileMapper.toEntity(request, acc);
@@ -56,10 +57,10 @@ public class ProfileServiceImpl implements ProfileService {
                 .orElseThrow(() -> new IllegalArgumentException("Compte introuvable."));
 
         if (acc.getPrimaryRole() != Role.DIRECTEUR) {
-            throw new IllegalStateException("R?le incompatible: DIRECTEUR requis.");
+            throw new IllegalStateException("Role incompatible: DIRECTEUR requis.");
         }
         if (encadrantProfileRepository.existsByAccount_Id(acc.getId())) {
-            throw new IllegalStateException("Profil encadrant d?j? existant.");
+            throw new IllegalStateException("Profil encadrant deja existant.");
         }
 
         EncadrantProfile entity = encadrantProfileMapper.toEntity(request, acc);
@@ -82,6 +83,56 @@ public class ProfileServiceImpl implements ProfileService {
     public EncadrantProfileResponse getEncadrantProfile(UUID accountId) {
         EncadrantProfile entity = encadrantProfileRepository.findByAccount_Id(accountId)
                 .orElseThrow(() -> new IllegalArgumentException("Profil encadrant introuvable."));
+        return encadrantProfileMapper.toDto(entity);
+    }
+
+    @Override
+    @Transactional
+    public DoctorantProfileResponse updateDoctorantProfile(UUID accountId, UpdateDoctorantProfileRequest request) {
+        DoctorantProfile entity = doctorantProfileRepository.findByAccount_Id(accountId)
+                .orElseThrow(() -> new IllegalArgumentException("Profil doctorant introuvable."));
+
+        if (entity.getAccount().getPrimaryRole() != Role.DOCTORANT) {
+            throw new IllegalStateException("Role incompatible: DOCTORANT requis.");
+        }
+        if (entity.getInfo() == null) {
+            entity.setInfo(new CommonProfileInfo());
+        }
+
+        doctorantProfileMapper.updateEntity(request, entity);
+        entity = doctorantProfileRepository.save(entity);
+
+        Account acc = entity.getAccount();
+        if (!acc.isProfileCompleted()) {
+            acc.setProfileCompleted(true);
+            accountRepository.save(acc);
+        }
+
+        return doctorantProfileMapper.toDto(entity);
+    }
+
+    @Override
+    @Transactional
+    public EncadrantProfileResponse updateEncadrantProfile(UUID accountId, UpdateEncadrantProfileRequest request) {
+        EncadrantProfile entity = encadrantProfileRepository.findByAccount_Id(accountId)
+                .orElseThrow(() -> new IllegalArgumentException("Profil encadrant introuvable."));
+
+        if (entity.getAccount().getPrimaryRole() != Role.DIRECTEUR) {
+            throw new IllegalStateException("Role incompatible: DIRECTEUR requis.");
+        }
+        if (entity.getInfo() == null) {
+            entity.setInfo(new CommonProfileInfo());
+        }
+
+        encadrantProfileMapper.updateEntity(request, entity);
+        entity = encadrantProfileRepository.save(entity);
+
+        Account acc = entity.getAccount();
+        if (!acc.isProfileCompleted()) {
+            acc.setProfileCompleted(true);
+            accountRepository.save(acc);
+        }
+
         return encadrantProfileMapper.toDto(entity);
     }
 }

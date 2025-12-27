@@ -39,5 +39,21 @@ public class ProfilesController {
     public ResponseEntity<EncadrantProfileResponse> getEncadrant(@PathVariable UUID accountId) {
         return ResponseEntity.ok(profileService.getEncadrantProfile(accountId));
     }
+
+    @PutMapping("/doctorant/{accountId}")
+    public ResponseEntity<DoctorantProfileResponse> updateDoctorant(
+            @PathVariable UUID accountId,
+            @Valid @RequestBody UpdateDoctorantProfileRequest body
+    ) {
+        return ResponseEntity.ok(profileService.updateDoctorantProfile(accountId, body));
+    }
+
+    @PutMapping("/encadrant/{accountId}")
+    public ResponseEntity<EncadrantProfileResponse> updateEncadrant(
+            @PathVariable UUID accountId,
+            @Valid @RequestBody UpdateEncadrantProfileRequest body
+    ) {
+        return ResponseEntity.ok(profileService.updateEncadrantProfile(accountId, body));
+    }
 }
 

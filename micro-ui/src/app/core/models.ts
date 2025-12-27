@@ -55,7 +55,39 @@ export interface CreateDoctorantProfileRequest {
   university?: string;
 }
 
+export interface UpdateDoctorantProfileRequest {
+  info: CommonProfileInfoDTO;
+  diploma?: string;
+  graduationYear?: number;
+  university?: string;
+}
+
+export interface DoctorantProfileResponse {
+  id: string;
+  accountId: string;
+  info: CommonProfileInfoDTO;
+  diploma?: string;
+  graduationYear?: number;
+  university?: string;
+}
+
 export interface CreateEncadrantProfileRequest {
+  accountId: string;
+  info: CommonProfileInfoDTO;
+  grade?: string;
+  departmentId?: string;
+  laboratoryId?: string;
+}
+
+export interface UpdateEncadrantProfileRequest {
+  info: CommonProfileInfoDTO;
+  grade?: string;
+  departmentId?: string;
+  laboratoryId?: string;
+}
+
+export interface EncadrantProfileResponse {
+  id: string;
   accountId: string;
   info: CommonProfileInfoDTO;
   grade?: string;

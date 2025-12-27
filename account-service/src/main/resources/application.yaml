@@ -12,7 +12,9 @@ spring:
   jpa:
     open-in-view: false
     hibernate:
-      ddl-auto: update
+      # Pour repartir de zéro à chaque démarrage en dev, mettre create-drop (par défaut ici).
+      # En prod, override avec DB_DDL_AUTO=update ou validate.
+      ddl-auto: ${DB_DDL_AUTO:create-drop}
     properties:
       hibernate:
         format_sql: true

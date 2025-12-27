@@ -1,7 +1,19 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environments/environment';
-import { AccountResponse, CreateDoctorantProfileRequest, CreateEncadrantProfileRequest, LoginRequest, RegisterRequest, RegisterResponse, TokenResponse } from './models';
+import {
+  AccountResponse,
+  CreateDoctorantProfileRequest,
+  CreateEncadrantProfileRequest,
+  DoctorantProfileResponse,
+  EncadrantProfileResponse,
+  LoginRequest,
+  RegisterRequest,
+  RegisterResponse,
+  TokenResponse,
+  UpdateDoctorantProfileRequest,
+  UpdateEncadrantProfileRequest
+} from './models';
 
 @Injectable({ providedIn: 'root' })
 export class ApiService {
@@ -29,11 +41,27 @@ export class ApiService {
   }
 
   createDoctorant(body: CreateDoctorantProfileRequest) {
-    return this.http.post(`${this.base}/profiles/doctorant`, body);
+    return this.http.post<DoctorantProfileResponse>(`${this.base}/profiles/doctorant`, body);
   }
 
   createEncadrant(body: CreateEncadrantProfileRequest) {
-    return this.http.post(`${this.base}/profiles/encadrant`, body);
+    return this.http.post<EncadrantProfileResponse>(`${this.base}/profiles/encadrant`, body);
+  }
+
+  getDoctorantProfile(accountId: string) {
+    return this.http.get<DoctorantProfileResponse>(`${this.base}/profiles/doctorant/${accountId}`);
+  }
+
+  getEncadrantProfile(accountId: string) {
+    return this.http.get<EncadrantProfileResponse>(`${this.base}/profiles/encadrant/${accountId}`);
+  }
+
+  updateDoctorant(accountId: string, body: UpdateDoctorantProfileRequest) {
+    return this.http.put<DoctorantProfileResponse>(`${this.base}/profiles/doctorant/${accountId}`, body);
+  }
+
+  updateEncadrant(accountId: string, body: UpdateEncadrantProfileRequest) {
+    return this.http.put<EncadrantProfileResponse>(`${this.base}/profiles/encadrant/${accountId}`, body);
   }
 
   // --- Admin (SUPERUSER) ---

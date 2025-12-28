@@ -34,4 +34,9 @@ public class AccountsController {
         UUID id = UUID.fromString(principal.getName());
         return ResponseEntity.ok(accountService.getById(id));
     }
+
+    @GetMapping("/verify-email")
+    public ResponseEntity<AccountResponse> verifyEmail(@RequestParam("token") String token) {
+        return ResponseEntity.ok(accountService.verifyEmail(token));
+    }
 }

@@ -9,6 +9,7 @@ public record AccountResponse(
         String phone,
         String status,
         String primaryRole,
-        boolean profileCompleted
+        boolean profileCompleted,
+        boolean emailVerified
 ) { }
 

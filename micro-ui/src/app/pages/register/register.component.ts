@@ -28,17 +28,17 @@ import { ApiService } from '../../core/api.service';
             <input type="password" formControlName="password" />
           </div>
           <div>
-            <label>Rôle</label>
+            <label>Role</label>
             <select formControlName="primaryRole">
               <option value="DOCTORANT">Doctorant</option>
               <option value="DIRECTEUR">Encadrant</option>
             </select>
           </div>
         </div>
-        <label>Téléphone</label>
+        <label>Telephone</label>
         <input formControlName="phone" />
         <div class="flex" style="margin-top:12px;">
-          <button type="submit" [disabled]="form.invalid || loading">Créer le compte</button>
+          <button type="submit" [disabled]="form.invalid || loading">Creer le compte</button>
           <span *ngIf="message" class="badge">{{message}}</span>
         </div>
       </form>
@@ -65,10 +65,10 @@ export class RegisterComponent {
     this.api.register(this.form.value as any).subscribe({
       next: res => {
         if (res.primaryRole === 'SUPERUSER' || res.status === 'ACTIVE') {
-          this.message = `Compte ${res.username} créé (status ${res.status})`;
+          this.message = `Compte ${res.username} cree (status ${res.status})`;
           setTimeout(() => this.router.navigateByUrl('/login'), 500);
         } else {
-          this.message = `Demande envoyée. Votre compte est en attente de validation par l'admin.`;
+          this.message = `Demande envoyee. Verifiez votre email avant validation par l'admin.`;
         }
         this.loading = false;
       },

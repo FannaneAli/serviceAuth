@@ -8,6 +8,7 @@ public record RegisterResponse(
         String email,
         String status,
         String primaryRole,
-        boolean profileCompleted
+        boolean profileCompleted,
+        boolean emailVerified
 ) { }
 

@@ -58,6 +58,10 @@ public class Account {
     @Builder.Default
     private boolean profileCompleted = false;
 
+    @Column(name = "email_verified", nullable = false)
+    @Builder.Default
+    private boolean emailVerified = false;
+
     @Version
     @Column(name = "version", nullable = false)
     @Builder.Default

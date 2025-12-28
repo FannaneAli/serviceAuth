@@ -46,7 +46,11 @@ export class LoginComponent {
         this.api.me().subscribe({
           next: me => {
             localStorage.setItem('role', me.primaryRole);
-            this.router.navigateByUrl('/dashboard');
+            if (me.primaryRole === 'SUPERUSER') {
+              this.router.navigateByUrl('/admin');
+            } else {
+              this.router.navigateByUrl('/dashboard');
+            }
           },
           error: () => {
             this.router.navigateByUrl('/dashboard');

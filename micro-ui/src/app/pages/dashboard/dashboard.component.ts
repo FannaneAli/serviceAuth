@@ -6,28 +6,40 @@ import { ApiService } from '../../core/api.service';
 import {
   AccountResponse,
   CommonProfileInfoDTO,
+  Department,
   DoctorantProfileResponse,
   EncadrantProfileResponse,
+  Laboratory,
   UpdateDoctorantProfileRequest,
   UpdateEncadrantProfileRequest
 } from '../../core/models';
+
+type Tab = 'session' | 'account' | 'profile';
 
 @Component({
   standalone: true,
   selector: 'app-dashboard',
   imports: [CommonModule, ReactiveFormsModule, RouterLink],
   template: `
-    <div class="card">
+    <div class="panel">
+      <div class="flex" style="gap:8px; flex-wrap:wrap;">
+        <button (click)="setTab('session')" [disabled]="activeTab==='session'">Session</button>
+        <button (click)="setTab('account')" [disabled]="activeTab==='account'">Mon compte</button>
+        <button (click)="setTab('profile')" [disabled]="activeTab==='profile'">Profil</button>
+        <a *ngIf="isSuperuser()" routerLink="/admin" class="badge" style="background:#d3b869; color:#111;">Admin</a>
+      </div>
+    </div>
+
+    <div class="panel" *ngIf="activeTab==='session'">
       <h2>Session</h2>
       <div class="flex" style="flex-wrap:wrap; gap:8px;">
         <button (click)="refreshAccess()">Refresh token</button>
         <button (click)="logout()">Logout</button>
-        <a *ngIf="isSuperuser()" routerLink="/admin" class="badge" style="background:#38bdf8; color:#0b1324;">Admin</a>
         <span *ngIf="sessionMessage" class="badge">{{sessionMessage}}</span>
       </div>
     </div>
 
-    <div class="card" *ngIf="me">
+    <div class="panel" *ngIf="activeTab==='account' && me">
       <h2>Mon compte</h2>
       <p><strong>Username:</strong> {{me.username}}</p>
       <p><strong>Email:</strong> {{me.email}}</p>
@@ -36,7 +48,7 @@ import {
       <p><strong>Profil complet ?</strong> {{me.profileCompleted}}</p>
     </div>
 
-    <div class="card" *ngIf="me?.primaryRole === 'DOCTORANT'">
+    <div class="panel" *ngIf="activeTab==='profile' && me?.primaryRole === 'DOCTORANT'">
       <h3>Profil doctorant</h3>
 
       <div *ngIf="doctorantProfile && !editingDoctorant" class="profile-block">
@@ -81,7 +93,7 @@ import {
       </form>
     </div>
 
-    <div class="card" *ngIf="me?.primaryRole === 'DIRECTEUR'">
+    <div class="panel" *ngIf="activeTab==='profile' && me?.primaryRole === 'DIRECTEUR'">
       <h3>Profil encadrant</h3>
 
       <div *ngIf="encadrantProfile && !editingEncadrant" class="profile-block">
@@ -114,8 +126,16 @@ import {
           <div><label>Adresse</label><input formControlName="address" /></div>
         </div>
         <label>Grade</label><input formControlName="grade" />
-        <label>Departement (UUID)</label><input formControlName="departmentId" />
-        <label>Laboratoire (UUID)</label><input formControlName="laboratoryId" />
+        <label>Departement</label>
+        <select formControlName="departmentId">
+          <option value="">-- Choisir --</option>
+          <option *ngFor="let dep of departments" [value]="dep.id">{{dep.name}}</option>
+        </select>
+        <label>Laboratoire</label>
+        <select formControlName="laboratoryId">
+          <option value="">-- Choisir --</option>
+          <option *ngFor="let lab of laboratories" [value]="lab.id">{{lab.name}}</option>
+        </select>
         <div class="flex" style="margin-top:12px; gap:8px;">
           <button type="submit" [disabled]="encForm.invalid">{{ encadrantProfile ? 'Mettre a jour' : 'Enregistrer profil' }}</button>
           <button type="button" *ngIf="encadrantProfile" (click)="cancelEncadrantEdit()">Annuler</button>
@@ -126,9 +146,12 @@ import {
   `
 })
 export class DashboardComponent implements OnInit {
+  activeTab: Tab = 'session';
   me: AccountResponse | null = null;
   doctorantProfile: DoctorantProfileResponse | null = null;
   encadrantProfile: EncadrantProfileResponse | null = null;
+  departments: Department[] = [];
+  laboratories: Laboratory[] = [];
   editingDoctorant = false;
   editingEncadrant = false;
   sessionMessage = '';
@@ -159,6 +182,8 @@ export class DashboardComponent implements OnInit {
   ngOnInit() {
     this.loadMe();
   }
+
+  setTab(tab: Tab) { this.activeTab = tab; }
 
   isSuperuser(): boolean {
     return localStorage.getItem('role') === 'SUPERUSER';
@@ -199,6 +224,7 @@ export class DashboardComponent implements OnInit {
         }
       });
     } else if (this.me.primaryRole === 'DIRECTEUR') {
+      this.loadStructures();
       this.api.getEncadrantProfile(this.me.id).subscribe({
         next: profile => {
           this.encadrantProfile = profile;
@@ -419,5 +445,10 @@ export class DashboardComponent implements OnInit {
     const trimmed = value.trim();
     const uuidRegex = /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-5][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$/;
     return uuidRegex.test(trimmed) ? trimmed : undefined;
+  }
+
+  private loadStructures() {
+    this.api.listDepartments().subscribe({ next: d => this.departments = d });
+    this.api.listLaboratories().subscribe({ next: l => this.laboratories = l });
   }
 }

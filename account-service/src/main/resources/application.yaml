@@ -14,7 +14,7 @@ spring:
     hibernate:
       # Pour repartir de zéro à chaque démarrage en dev, mettre create-drop (par défaut ici).
       # En prod, override avec DB_DDL_AUTO=update ou validate.
-      ddl-auto: ${DB_DDL_AUTO:create-drop}
+      ddl-auto: ${DB_DDL_AUTO:update}
     properties:
       hibernate:
         format_sql: true
@@ -43,3 +43,13 @@ app:
     issuer: serviceAuth
     secret: "T1Yt9cV5yZ0R3Q0p4uHn8Aq2Lw7mN3sX6pB4dF1kJ9rE2tV8cH5qZ7yW0uM6nR3"
     access-token-expiration: 3600
+  verification:
+    base-url: ${APP_VERIFICATION_BASE_URL:http://localhost:8085/accounts/verify-email?token=}
+    ttl-minutes: ${APP_VERIFICATION_TTL_MINUTES:1440}
+  gmail:
+    client-id: ${GOOGLE_CLIENT_ID:}
+    client-secret: ${GOOGLE_CLIENT_SECRET:}
+    refresh-token: ${GOOGLE_REFRESH_TOKEN:}
+    from: ${GMAIL_FROM:noreply@example.com}
+  front:
+    login-url: ${APP_LOGIN_URL:http://localhost:4200/login}

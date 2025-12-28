@@ -14,7 +14,7 @@ spring:
         - id: account-service
           uri: lb://account-service
           predicates:
-            - Path=/accounts/**,/profiles/**,/admin/**
+            - Path=/accounts/**,/profiles/**,/admin/**,/departments/**,/laboratories/**
       default-filters: []
       globalcors:
         add-to-simple-url-handler-mapping: true

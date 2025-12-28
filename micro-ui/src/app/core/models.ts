@@ -21,6 +21,13 @@ export interface RegisterRequest {
   primaryRole: Role;
 }
 
+export interface CreateAdminRequest {
+  username: string;
+  email: string;
+  password: string;
+  phone?: string;
+}
+
 export interface RegisterResponse {
   accountId: string;
   username: string;
@@ -28,6 +35,7 @@ export interface RegisterResponse {
   status: string;
   primaryRole: string;
   profileCompleted: boolean;
+  emailVerified: boolean;
 }
 
 export interface AccountResponse {
@@ -38,6 +46,7 @@ export interface AccountResponse {
   status: string;
   primaryRole: string;
   profileCompleted: boolean;
+  emailVerified: boolean;
 }
 
 export interface CommonProfileInfoDTO {
@@ -93,4 +102,16 @@ export interface EncadrantProfileResponse {
   grade?: string;
   departmentId?: string;
   laboratoryId?: string;
+}
+
+export interface Department {
+  id: string;
+  name: string;
+  description?: string;
+}
+
+export interface Laboratory {
+  id: string;
+  name: string;
+  description?: string;
 }

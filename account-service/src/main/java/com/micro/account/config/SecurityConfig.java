@@ -25,6 +25,7 @@ public class SecurityConfig {
                         .requestMatchers("/actuator/health").permitAll()
                         .requestMatchers("/internal/accounts/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/accounts").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/accounts/verify-email").permitAll()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(new JwtAuthFilter(verifier), UsernamePasswordAuthenticationFilter.class)

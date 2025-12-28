@@ -12,7 +12,10 @@ import {
   RegisterResponse,
   TokenResponse,
   UpdateDoctorantProfileRequest,
-  UpdateEncadrantProfileRequest
+  UpdateEncadrantProfileRequest,
+  CreateAdminRequest,
+  Department,
+  Laboratory
 } from './models';
 
 @Injectable({ providedIn: 'root' })
@@ -67,6 +70,42 @@ export class ApiService {
   // --- Admin (SUPERUSER) ---
   listPendingAccounts() {
     return this.http.get<AccountResponse[]>(`${this.base}/admin/accounts/pending`);
+  }
+
+  listAllAccounts() {
+    return this.http.get<AccountResponse[]>(`${this.base}/admin/accounts`);
+  }
+
+  listAdmins() {
+    return this.http.get<AccountResponse[]>(`${this.base}/admin/accounts/admins`);
+  }
+
+  listDepartments() {
+    return this.http.get<Department[]>(`${this.base}/departments`);
+  }
+
+  listLaboratories() {
+    return this.http.get<Laboratory[]>(`${this.base}/laboratories`);
+  }
+
+  createDepartment(body: { name: string; description?: string }) {
+    return this.http.post<Department>(`${this.base}/admin/departments`, body);
+  }
+
+  createLaboratory(body: { name: string; description?: string }) {
+    return this.http.post<Laboratory>(`${this.base}/admin/laboratories`, body);
+  }
+
+  createAdmin(body: CreateAdminRequest) {
+    return this.http.post<AccountResponse>(`${this.base}/admin/accounts/admins`, body);
+  }
+
+  activateAdmin(id: string) {
+    return this.http.post<AccountResponse>(`${this.base}/admin/accounts/${id}/activate`, {});
+  }
+
+  suspendAdmin(id: string) {
+    return this.http.post<AccountResponse>(`${this.base}/admin/accounts/${id}/suspend`, {});
   }
 
   approveAccount(id: string) {

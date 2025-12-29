@@ -1,0 +1,119 @@
+version: "3.9"
+
+services:
+  postgres:
+    image: postgres:16
+    container_name: postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 1234
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./docker/initdb:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  eureka-server:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+      args:
+        APP_NAME: eureka-server
+    environment:
+      SERVER_PORT: 8761
+    ports:
+      - "8761:8761"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  auth-service:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+      args:
+        APP_NAME: auth-service
+    environment:
+      DB_URL_AUTH: jdbc:postgresql://postgres:5432/auth_db
+      DB_USERNAME: postgres
+      DB_PASSWORD: 1234
+      EUREKA_SERVER: http://eureka-server:8761/eureka
+      SERVER_PORT: 8083
+    ports:
+      - "8083:8083"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      eureka-server:
+        condition: service_started
+
+  account-service:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+      args:
+        APP_NAME: account-service
+    environment:
+      DB_URL_ACCOUNT: jdbc:postgresql://postgres:5432/account_db
+      DB_USERNAME: postgres
+      DB_PASSWORD: 1234
+      DB_DDL_AUTO: update
+      EUREKA_SERVER: http://eureka-server:8761/eureka
+      SERVER_PORT: 8082
+    ports:
+      - "8082:8082"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      eureka-server:
+        condition: service_started
+
+  soutenances-service:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+      args:
+        APP_NAME: soutenances-service
+    environment:
+      DB_URL_SOUTENANCES: jdbc:postgresql://postgres:5432/soutenances_db
+      DB_USERNAME: postgres
+      DB_PASSWORD: 1234
+      DB_DDL_AUTO: update
+      EUREKA_SERVER: http://eureka-server:8761/eureka
+      SERVER_PORT: 8081
+    ports:
+      - "8081:8081"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      eureka-server:
+        condition: service_started
+
+  api-gateway:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+      args:
+        APP_NAME: api-gateway
+    environment:
+      SERVER_PORT: 8085
+      EUREKA_SERVER: http://eureka-server:8761/eureka
+    ports:
+      - "8085:8085"
+    depends_on:
+      eureka-server:
+        condition: service_started
+      auth-service:
+        condition: service_started
+      account-service:
+        condition: service_started
+      soutenances-service:
+        condition: service_started
+
+volumes:
+  pgdata:

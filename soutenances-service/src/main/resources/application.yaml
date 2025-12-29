@@ -1,0 +1,60 @@
+server:
+  port: ${SERVER_PORT:8081}
+
+spring:
+  application:
+    name: soutenances-service
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: ${DB_URL_SOUTENANCES:jdbc:postgresql://localhost:5432/soutenances_db}
+    username: ${DB_USERNAME:postgres}
+    password: ${DB_PASSWORD:1234}
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: ${DB_DDL_AUTO:update}
+    properties:
+      hibernate:
+        format_sql: true
+        jdbc.lob.non_contextual_creation: true
+  jackson:
+    serialization:
+      WRITE_DATES_AS_TIMESTAMPS: false
+
+eureka:
+  client:
+    service-url:
+      defaultZone: ${EUREKA_SERVER:http://localhost:8761/eureka}
+  instance:
+    prefer-ip-address: true
+
+info:
+  app:
+    name: Soutenance Service
+    description: Microservice for soutenance management
+    version: 1.0.0
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: always
+
+logging:
+  level:
+    root: INFO
+
+soutenances:
+  prerequisites:
+    min-publications: 2
+    min-conferences: 2
+    min-training-hours: 200
+    required-documents:
+      manuscript: true
+      anti-plagiarism-report: true
+      publications-report: true
+      training-certificates: true
+      handwritten-request: true

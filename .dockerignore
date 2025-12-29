@@ -1,0 +1,12 @@
+.git
+.idea
+.vscode
+**/target
+**/node_modules
+**/dist
+**/build
+**/.DS_Store
+**/*.log
+**/tmp
+**/out
+docker-compose.yml.bak

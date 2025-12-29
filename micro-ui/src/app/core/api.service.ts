@@ -92,8 +92,24 @@ export class ApiService {
     return this.http.post<Department>(`${this.base}/admin/departments`, body);
   }
 
+  updateDepartment(id: string, body: { name: string; description?: string }) {
+    return this.http.put<Department>(`${this.base}/admin/departments/${id}`, body);
+  }
+
+  deleteDepartment(id: string) {
+    return this.http.delete<void>(`${this.base}/admin/departments/${id}`);
+  }
+
   createLaboratory(body: { name: string; description?: string }) {
     return this.http.post<Laboratory>(`${this.base}/admin/laboratories`, body);
+  }
+
+  updateLaboratory(id: string, body: { name: string; description?: string }) {
+    return this.http.put<Laboratory>(`${this.base}/admin/laboratories/${id}`, body);
+  }
+
+  deleteLaboratory(id: string) {
+    return this.http.delete<void>(`${this.base}/admin/laboratories/${id}`);
   }
 
   createAdmin(body: CreateAdminRequest) {

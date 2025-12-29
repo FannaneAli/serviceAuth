@@ -12,5 +12,7 @@ public interface EncadrantProfileRepository extends JpaRepository<EncadrantProfi
     boolean existsByAccount_Id(UUID accountId);
     List<EncadrantProfile> findAllByDepartmentId(UUID departmentId);
     List<EncadrantProfile> findAllByLaboratoryId(UUID laboratoryId);
+    boolean existsByDepartmentId(UUID departmentId);
+    boolean existsByLaboratoryId(UUID laboratoryId);
 }
 

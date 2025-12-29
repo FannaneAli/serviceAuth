@@ -7,6 +7,7 @@ import com.micro.account.dto.LaboratoryResponse;
 import com.micro.account.entity.Department;
 import com.micro.account.entity.Laboratory;
 import com.micro.account.repository.DepartmentRepository;
+import com.micro.account.repository.EncadrantProfileRepository;
 import com.micro.account.repository.LaboratoryRepository;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +25,7 @@ public class StructuresController {
 
     private final DepartmentRepository departmentRepository;
     private final LaboratoryRepository laboratoryRepository;
+    private final EncadrantProfileRepository encadrantProfileRepository;
 
     // --- Public (authentifie) ---
     @GetMapping("/departments")
@@ -68,6 +70,18 @@ public class StructuresController {
         return ResponseEntity.ok(new DepartmentResponse(saved.getId(), saved.getName(), saved.getDescription()));
     }
 
+    @DeleteMapping("/admin/departments/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN','SUPERUSER')")
+    public ResponseEntity<Void> deleteDepartment(@PathVariable UUID id) {
+        Department dep = departmentRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Departement introuvable."));
+        if (encadrantProfileRepository.existsByDepartmentId(id)) {
+            throw new IllegalStateException("Suppression impossible : des encadrants sont rattaches a ce departement.");
+        }
+        departmentRepository.delete(dep);
+        return ResponseEntity.noContent().build();
+    }
+
     @PostMapping("/admin/laboratories")
     @PreAuthorize("hasAnyRole('ADMIN','SUPERUSER')")
     public ResponseEntity<LaboratoryResponse> createLaboratory(@Valid @RequestBody CreateLaboratoryRequest req) {
@@ -91,5 +105,17 @@ public class StructuresController {
         lab.setDescription(req.description());
         Laboratory saved = laboratoryRepository.save(lab);
         return ResponseEntity.ok(new LaboratoryResponse(saved.getId(), saved.getName(), saved.getDescription()));
+    }
+
+    @DeleteMapping("/admin/laboratories/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN','SUPERUSER')")
+    public ResponseEntity<Void> deleteLaboratory(@PathVariable UUID id) {
+        Laboratory lab = laboratoryRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Laboratoire introuvable."));
+        if (encadrantProfileRepository.existsByLaboratoryId(id)) {
+            throw new IllegalStateException("Suppression impossible : des encadrants sont rattaches a ce laboratoire.");
+        }
+        laboratoryRepository.delete(lab);
+        return ResponseEntity.noContent().build();
     }
 }

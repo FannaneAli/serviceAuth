@@ -3,42 +3,43 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { ApiService } from '../../core/api.service';
+import { TranslatePipe } from '../../core/translate.pipe';
 
 @Component({
   standalone: true,
   selector: 'app-register',
-  imports: [CommonModule, ReactiveFormsModule, RouterLink],
+  imports: [CommonModule, ReactiveFormsModule, RouterLink, TranslatePipe],
   template: `
     <div class="card">
-      <h2>Inscription</h2>
+      <h2>{{ 'register.title' | t }}</h2>
       <form [formGroup]="form" (ngSubmit)="submit()">
         <div class="form-row">
           <div>
-            <label>Username</label>
+            <label>{{ 'register.username' | t }}</label>
             <input formControlName="username" />
           </div>
           <div>
-            <label>Email</label>
+            <label>{{ 'register.email' | t }}</label>
             <input formControlName="email" />
           </div>
         </div>
         <div class="form-row">
           <div>
-            <label>Mot de passe</label>
+            <label>{{ 'register.password' | t }}</label>
             <input type="password" formControlName="password" />
           </div>
           <div>
-            <label>Role</label>
+            <label>{{ 'register.role' | t }}</label>
             <select formControlName="primaryRole">
-              <option value="DOCTORANT">Doctorant</option>
-              <option value="DIRECTEUR">Encadrant</option>
+              <option value="DOCTORANT">{{ 'register.roles.doctorant' | t }}</option>
+              <option value="DIRECTEUR">{{ 'register.roles.encadrant' | t }}</option>
             </select>
           </div>
         </div>
-        <label>Telephone</label>
+        <label>{{ 'register.phone' | t }}</label>
         <input formControlName="phone" />
         <div class="flex" style="margin-top:12px;">
-          <button type="submit" [disabled]="form.invalid || loading">Creer le compte</button>
+          <button type="submit" [disabled]="form.invalid || loading">{{ 'register.submit' | t }}</button>
           <span *ngIf="message" class="badge">{{message}}</span>
         </div>
       </form>

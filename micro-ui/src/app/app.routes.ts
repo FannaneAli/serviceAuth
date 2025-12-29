@@ -1,16 +1,26 @@
 import { Routes } from '@angular/router';
-import { LoginComponent } from './pages/login/login.component';
-import { RegisterComponent } from './pages/register/register.component';
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
 import { AdminComponent } from './pages/admin/admin.component';
 import { authGuard } from './core/auth.guard';
 import { adminGuard } from './core/admin.guard';
+import { AuthPageComponent } from './pages/auth/auth-page.component';
+import { MainLayoutComponent } from './core/main-layout.component';
 
 export const routes: Routes = [
-  { path: 'login', component: LoginComponent },
-  { path: 'register', component: RegisterComponent },
-  { path: 'dashboard', component: DashboardComponent, canActivate: [authGuard] },
-  { path: 'admin', component: AdminComponent, canActivate: [authGuard, adminGuard] },
-  { path: '', pathMatch: 'full', redirectTo: 'dashboard' },
+  {
+    path: '',
+    component: MainLayoutComponent,
+    canActivateChild: [authGuard],
+    children: [
+      { path: 'dashboard', component: DashboardComponent },
+      { path: 'doctorant', component: DashboardComponent },
+      { path: 'encadrant', component: DashboardComponent },
+      { path: 'admin', component: AdminComponent, canActivate: [adminGuard] },
+      { path: 'superuser', component: AdminComponent, canActivate: [adminGuard] },
+      { path: '', pathMatch: 'full', redirectTo: 'dashboard' }
+    ]
+  },
+  { path: 'login', component: AuthPageComponent },
+  { path: 'register', component: AuthPageComponent },
   { path: '**', redirectTo: 'dashboard' }
 ];

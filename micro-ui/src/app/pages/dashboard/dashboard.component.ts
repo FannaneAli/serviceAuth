@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { ApiService } from '../../core/api.service';
 import {
   AccountResponse,
@@ -26,7 +26,7 @@ type Tab = 'session' | 'account' | 'profile';
         <button (click)="setTab('session')" [disabled]="activeTab==='session'">Session</button>
         <button (click)="setTab('account')" [disabled]="activeTab==='account'">Mon compte</button>
         <button (click)="setTab('profile')" [disabled]="activeTab==='profile'">Profil</button>
-        <a *ngIf="isSuperuser()" routerLink="/admin" class="badge" style="background:#d3b869; color:#111;">Admin</a>
+        <a *ngIf="isSuperuser()" routerLink="/superuser" class="badge" style="background:#d3b869; color:#111;">Superuser</a>
       </div>
     </div>
 
@@ -177,9 +177,10 @@ export class DashboardComponent implements OnInit {
     laboratoryId: ['']
   });
 
-  constructor(private fb: FormBuilder, private api: ApiService) {}
+  constructor(private fb: FormBuilder, private api: ApiService, private router: Router) {}
 
   ngOnInit() {
+    this.setInitialTab();
     this.loadMe();
   }
 
@@ -450,5 +451,14 @@ export class DashboardComponent implements OnInit {
   private loadStructures() {
     this.api.listDepartments().subscribe({ next: d => this.departments = d });
     this.api.listLaboratories().subscribe({ next: l => this.laboratories = l });
+  }
+
+  private setInitialTab() {
+    const url = this.router.url;
+    if (url.includes('doctorant') || url.includes('encadrant')) {
+      this.activeTab = 'profile';
+    } else {
+      this.activeTab = 'session';
+    }
   }
 }

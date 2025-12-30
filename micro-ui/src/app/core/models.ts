@@ -127,6 +127,12 @@ export type SoutenanceStatus =
   | 'DEFENDED'
   | 'CLOSED';
 
+export type SoutenanceResult =
+  | 'TRES_HONORABLE_AVEC_FELICITATIONS'
+  | 'TRES_HONORABLE'
+  | 'HONORABLE'
+  | 'AJOURNE';
+
 export type JuryRole = 'PRESIDENT' | 'RAPPORTEUR' | 'EXAMINATEUR' | 'INVITE';
 
 export interface JuryMember {
@@ -188,6 +194,27 @@ export interface SoutenanceResponse {
   procesVerbalUrl?: string;
   juryValidated?: boolean;
   jury: JuryMember[];
+  // Director approval
+  directorApproved?: boolean;
+  directorApprovalDate?: string;
+  directorComments?: string;
+  // Rapporteur reports
+  rapporteur1ReportUrl?: string;
+  rapporteur1Favorable?: boolean;
+  rapporteur1ReportDate?: string;
+  rapporteur1Comments?: string;
+  rapporteur2ReportUrl?: string;
+  rapporteur2Favorable?: boolean;
+  rapporteur2ReportDate?: string;
+  rapporteur2Comments?: string;
+  allRapporteursFavorable?: boolean;
+  // Result
+  result?: SoutenanceResult;
+  resultDate?: string;
+  resultComments?: string;
+  // Duration alert
+  durationAlertSent?: boolean;
+  approachingSixYearLimit?: boolean;
 }
 
 export interface UpdateSoutenanceStatusRequest {
@@ -201,4 +228,67 @@ export interface ScheduleSoutenanceRequest {
 
 export interface UpdateJuryRequest {
   members: JuryMember[];
+}
+
+export interface DirectorApprovalRequest {
+  approved: boolean;
+  comments?: string;
+}
+
+export interface RapporteurReportRequest {
+  rapporteurNumber: 1 | 2;
+  reportUrl: string;
+  favorable: boolean;
+  comments?: string;
+}
+
+export interface SetResultRequest {
+  result: SoutenanceResult;
+  comments?: string;
+}
+
+// Notifications
+export type NotificationChannel = 'EMAIL' | 'PUSH' | 'SMS';
+export type NotificationType =
+  | 'GENERIC'
+  | 'ACCOUNT_REGISTRATION'
+  | 'EMAIL_VERIFICATION'
+  | 'PASSWORD_RESET'
+  | 'SOUTENANCE_EVENT'
+  | 'SOUTENANCE_SUBMITTED'
+  | 'SOUTENANCE_UNDER_REVIEW'
+  | 'SOUTENANCE_APPROVED'
+  | 'SOUTENANCE_REJECTED'
+  | 'SOUTENANCE_AUTHORIZED'
+  | 'SOUTENANCE_SCHEDULED'
+  | 'SOUTENANCE_JURY_VALIDATED'
+  | 'SOUTENANCE_DEFENDED'
+  | 'SOUTENANCE_DIRECTOR_APPROVED'
+  | 'SOUTENANCE_DIRECTOR_REJECTED'
+  | 'SOUTENANCE_RAPPORTEUR_REPORT_SUBMITTED'
+  | 'SOUTENANCE_RESULT_SET'
+  | 'DURATION_LIMIT_APPROACHING';
+
+export type NotificationStatus = 'PENDING' | 'SENT' | 'FAILED' | 'READ';
+
+export interface NotificationResponse {
+  id: string;
+  accountId: string;
+  channel: NotificationChannel;
+  type: NotificationType;
+  recipient?: string;
+  subject?: string;
+  content?: string;
+  status: NotificationStatus;
+  metadata?: Record<string, any>;
+  sentAt?: string;
+  createdAt?: string;
+}
+
+// PDF Documents
+export interface DocumentInfo {
+  type: 'attestation' | 'autorisation' | 'proces-verbal' | 'proces-verbal-complet';
+  url: string;
+  title: string;
+  icon: string;
 }

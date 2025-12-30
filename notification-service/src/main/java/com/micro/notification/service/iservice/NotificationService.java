@@ -13,4 +13,19 @@ public interface NotificationService {
     NotificationResponse getById(UUID id);
 
     List<NotificationResponse> getByAccount(UUID accountId);
+
+    /**
+     * Mark a notification as read.
+     */
+    NotificationResponse markAsRead(UUID notificationId);
+
+    /**
+     * Mark all notifications for an account as read.
+     */
+    void markAllAsRead(UUID accountId);
+
+    /**
+     * Get count of unread notifications for an account.
+     */
+    long getUnreadCount(UUID accountId);
 }

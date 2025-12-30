@@ -3,7 +3,6 @@ package com.micro.notification.entity;
 import com.micro.notification.enums.NotificationChannel;
 import com.micro.notification.enums.NotificationStatus;
 import com.micro.notification.enums.NotificationType;
-import com.micro.notification.util.JsonMapConverter;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,7 +10,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.annotations.UuidGenerator;
+import org.hibernate.type.SqlTypes;
 
 import java.time.Instant;
 import java.util.Map;
@@ -53,7 +54,7 @@ public class Notification {
     @Column(name = "content", nullable = false, length = 4000)
     private String content;
 
-    @Convert(converter = JsonMapConverter.class)
+    @JdbcTypeCode(SqlTypes.JSON)
     @Column(name = "metadata", columnDefinition = "jsonb")
     private Map<String, Object> metadata;
 
@@ -67,6 +68,9 @@ public class Notification {
 
     @Column(name = "sent_at")
     private Instant sentAt;
+
+    @Column(name = "read_at")
+    private Instant readAt;
 
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)

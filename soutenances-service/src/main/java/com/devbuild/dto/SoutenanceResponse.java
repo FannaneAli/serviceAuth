@@ -1,5 +1,6 @@
 package com.devbuild.dto;
 
+import com.devbuild.enums.SoutenanceResult;
 import com.devbuild.enums.SoutenanceStatus;
 
 import java.time.LocalDateTime;
@@ -34,5 +35,26 @@ public record SoutenanceResponse(
         String attestationUrl,
         String procesVerbalUrl,
         boolean juryValidated,
-        List<JuryMemberResponse> jury
+        List<JuryMemberResponse> jury,
+        // Director approval
+        boolean directorApproved,
+        LocalDateTime directorApprovalDate,
+        String directorComments,
+        // Rapporteur reports
+        String rapporteur1ReportUrl,
+        Boolean rapporteur1Favorable,
+        LocalDateTime rapporteur1ReportDate,
+        String rapporteur1Comments,
+        String rapporteur2ReportUrl,
+        Boolean rapporteur2Favorable,
+        LocalDateTime rapporteur2ReportDate,
+        String rapporteur2Comments,
+        boolean allRapporteursFavorable,
+        // Result
+        SoutenanceResult result,
+        LocalDateTime resultDate,
+        String resultComments,
+        // Duration alert
+        boolean durationAlertSent,
+        boolean approachingSixYearLimit
 ) {}

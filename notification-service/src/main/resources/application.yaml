@@ -54,12 +54,17 @@ management:
 logging:
   level:
     root: INFO
+    com.micro.notification: DEBUG
 
 notification:
   mail:
-    from: ${MAIL_FROM:}
+    from: ${MAIL_FROM:docport@localhost}
 
 app:
+  jwt:
+    secret: ${JWT_SECRET:Y2hhbmdlLXRoaXMtc2VjcmV0LWluLXByb2R1Y3Rpb24K}
+    issuer: ${JWT_ISSUER:serviceAuth}
+    clock-skew-seconds: ${JWT_CLOCK_SKEW:60}
   kafka:
     topics:
       notifications: ${KAFKA_NOTIFICATIONS_TOPIC:notifications}

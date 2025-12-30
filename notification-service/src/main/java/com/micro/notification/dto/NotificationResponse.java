@@ -20,5 +20,6 @@ public record NotificationResponse(
         NotificationStatus status,
         String lastError,
         Instant sentAt,
+        Instant readAt,
         Instant createdAt
 ) {}

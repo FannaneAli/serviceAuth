@@ -1,8 +1,10 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink, RouterOutlet } from '@angular/router';
 import { TranslatePipe } from './translate.pipe';
 import { TopControlsComponent } from './top-controls.component';
+import { ApiService } from './api.service';
+import { interval, Subscription } from 'rxjs';
 
 @Component({
   standalone: true,
@@ -24,9 +26,18 @@ import { TopControlsComponent } from './top-controls.component';
             <span class="nav-icon">🎓</span>
             <span class="label">Soutenances</span>
           </a>
-          <a *ngIf="role==='DIRECTEUR' || role==='ADMIN' || role==='SUPERUSER'" routerLink="/soutenances/revue" class="nav-chip icon-only" aria-label="Revue soutenances">
+          <a *ngIf="role==='DIRECTEUR'" routerLink="/soutenances/directeur" class="nav-chip icon-only" aria-label="Gestion soutenances">
+            <span class="nav-icon">📋</span>
+            <span class="label">Soutenances</span>
+          </a>
+          <a *ngIf="role==='ADMIN' || role==='SUPERUSER'" routerLink="/soutenances/revue" class="nav-chip icon-only" aria-label="Revue soutenances">
             <span class="nav-icon">✅</span>
             <span class="label">Revue sout.</span>
+          </a>
+          <a *ngIf="role==='DOCTORANT'" routerLink="/notifications" class="nav-chip icon-only notification-link" aria-label="Notifications">
+            <span class="nav-icon">🔔</span>
+            <span class="label">Notifications</span>
+            <span *ngIf="unreadCount > 0" class="notif-badge">{{ unreadCount > 9 ? '9+' : unreadCount }}</span>
           </a>
           <a *ngIf="role==='DOCTORANT'" routerLink="/doctorant" class="nav-chip icon-only" aria-label="{{ 'nav.doctorant' | t }}">
             <span class="nav-icon">📘</span>
@@ -70,10 +81,57 @@ import { TopControlsComponent } from './top-controls.component';
         <router-outlet></router-outlet>
       </main>
     </div>
-  `
+  `,
+  styles: [`
+    .notification-link {
+      position: relative;
+    }
+    .notif-badge {
+      position: absolute;
+      top: -4px;
+      right: -4px;
+      background: #e0a546;
+      color: #2c1e07;
+      font-size: 10px;
+      font-weight: bold;
+      padding: 2px 5px;
+      border-radius: 10px;
+      min-width: 16px;
+      text-align: center;
+    }
+  `]
 })
-export class MainLayoutComponent {
-  constructor(private router: Router) {}
+export class MainLayoutComponent implements OnInit, OnDestroy {
+  unreadCount = 0;
+  private refreshSub?: Subscription;
+  private accountId?: string;
+
+  constructor(private router: Router, private api: ApiService) {}
+
+  ngOnInit(): void {
+    if (this.role === 'DOCTORANT') {
+      this.loadUnreadCount();
+      // Refresh every 60 seconds
+      this.refreshSub = interval(60000).subscribe(() => this.loadUnreadCount());
+    }
+  }
+
+  ngOnDestroy(): void {
+    this.refreshSub?.unsubscribe();
+  }
+
+  loadUnreadCount(): void {
+    this.api.me().subscribe({
+      next: me => {
+        this.accountId = me.id;
+        this.api.getNotificationsForAccount(me.id).subscribe({
+          next: list => {
+            this.unreadCount = list.filter(n => n.status !== 'READ').length;
+          }
+        });
+      }
+    });
+  }
 
   get role(): string | null {
     return localStorage.getItem('role');

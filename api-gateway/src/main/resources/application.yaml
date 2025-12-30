@@ -22,7 +22,9 @@ spring:
         - id: notification-service
           uri: lb://notification-service
           predicates:
-            - Path=/notifications/**
+            - Path=/notifications/**,/api/notifications/**
+          filters:
+            - RewritePath=/api/notifications/(?<segment>.*), /notifications/${segment}
       default-filters: []
       globalcors:
         add-to-simple-url-handler-mapping: true

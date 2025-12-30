@@ -1,7 +1,10 @@
 package com.devbuild.service.iservice;
 
 import com.devbuild.dto.CreateSoutenanceRequest;
+import com.devbuild.dto.DirectorApprovalRequest;
 import com.devbuild.dto.JuryMemberRequest;
+import com.devbuild.dto.RapporteurReportRequest;
+import com.devbuild.dto.SetResultRequest;
 import com.devbuild.dto.SoutenanceResponse;
 import com.devbuild.dto.UpdateSoutenanceStatusRequest;
 
@@ -28,4 +31,51 @@ public interface SoutenanceService {
     SoutenanceResponse replaceJury(UUID soutenanceId, List<JuryMemberRequest> members);
 
     SoutenanceResponse validateJury(UUID soutenanceId);
+
+    /**
+     * Director of thesis approves/rejects the soutenance request.
+     */
+    SoutenanceResponse approveByDirector(UUID soutenanceId, DirectorApprovalRequest request);
+
+    /**
+     * Submit a rapporteur's evaluation report.
+     */
+    SoutenanceResponse submitRapporteurReport(UUID soutenanceId, RapporteurReportRequest request);
+
+    /**
+     * Set the result/mention after the defense is completed.
+     */
+    SoutenanceResponse setResult(UUID soutenanceId, SetResultRequest request);
+
+    /**
+     * Get soutenances approaching the 6-year limit (for alerts).
+     */
+    List<SoutenanceResponse> getApproachingSixYearLimit();
+
+    /**
+     * Send duration alerts for doctorants approaching 6-year limit.
+     */
+    void sendDurationAlerts();
+
+    // ========== PDF Document Generation ==========
+
+    /**
+     * Generate the attestation d'inscription PDF.
+     */
+    String generateAttestation(UUID soutenanceId);
+
+    /**
+     * Generate the autorisation de soutenance PDF.
+     */
+    String generateAuthorization(UUID soutenanceId);
+
+    /**
+     * Generate the procès-verbal de soutenance (pré-rempli) PDF.
+     */
+    String generateProcesVerbal(UUID soutenanceId);
+
+    /**
+     * Generate the complete procès-verbal with jury and result information.
+     */
+    String generateProcesVerbalComplete(UUID soutenanceId);
 }

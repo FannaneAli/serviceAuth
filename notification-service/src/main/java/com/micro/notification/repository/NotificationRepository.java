@@ -12,4 +12,8 @@ public interface NotificationRepository extends JpaRepository<Notification, UUID
     List<Notification> findAllByAccountId(UUID accountId);
 
     List<Notification> findAllByStatus(NotificationStatus status);
+
+    List<Notification> findAllByAccountIdAndReadAtIsNull(UUID accountId);
+
+    long countByAccountIdAndReadAtIsNull(UUID accountId);
 }

@@ -103,6 +103,7 @@ public class NotificationServiceImpl implements NotificationService {
                 entity.getStatus(),
                 entity.getLastError(),
                 entity.getSentAt(),
+                entity.getReadAt(),
                 entity.getCreatedAt()
         );
     }
@@ -145,6 +146,11 @@ public class NotificationServiceImpl implements NotificationService {
             case SOUTENANCE_SCHEDULED -> "Soutenance planifiée";
             case SOUTENANCE_JURY_VALIDATED -> "Jury validé";
             case SOUTENANCE_DEFENDED -> "Soutenance effectuée";
+            case SOUTENANCE_DIRECTOR_APPROVED -> "Approbation du directeur de thèse";
+            case SOUTENANCE_DIRECTOR_REJECTED -> "Rejet par le directeur de thèse";
+            case SOUTENANCE_RAPPORTEUR_REPORT_SUBMITTED -> "Rapport de rapporteur soumis";
+            case SOUTENANCE_RESULT_SET -> "Résultat de soutenance enregistré";
+            case DURATION_LIMIT_APPROACHING -> "Alerte: Limite de 6 ans approchante";
             default -> "Notification";
         };
     }
@@ -155,6 +161,8 @@ public class NotificationServiceImpl implements NotificationService {
         String status = asString(md, "status");
         String scheduled = asString(md, "scheduledDateTime");
         String location = asString(md, "location");
+        String result = asString(md, "result");
+        String sixYearLimitDate = asString(md, "sixYearLimitDate");
 
         return switch (request.type()) {
             case SOUTENANCE_SUBMITTED ->
@@ -173,6 +181,17 @@ public class NotificationServiceImpl implements NotificationService {
                     "Votre dossier de soutenance" + titlePart(thesis) + " a été rejeté.";
             case SOUTENANCE_DEFENDED ->
                     "Votre soutenance" + titlePart(thesis) + " est marquée comme effectuée.";
+            case SOUTENANCE_DIRECTOR_APPROVED ->
+                    "Le directeur de thèse a approuvé votre demande de soutenance" + titlePart(thesis) + ".";
+            case SOUTENANCE_DIRECTOR_REJECTED ->
+                    "Le directeur de thèse a rejeté votre demande de soutenance" + titlePart(thesis) + ".";
+            case SOUTENANCE_RAPPORTEUR_REPORT_SUBMITTED ->
+                    "Un rapporteur a soumis son rapport pour votre soutenance" + titlePart(thesis) + ".";
+            case SOUTENANCE_RESULT_SET ->
+                    "Le résultat de votre soutenance" + titlePart(thesis) + " a été enregistré: " + (result != null ? result : "N/A") + ".";
+            case DURATION_LIMIT_APPROACHING ->
+                    "Votre inscription doctorale approche de la limite de 6 ans (échéance: " + sixYearLimitDate + "). " +
+                    "Veuillez prendre les mesures nécessaires pour finaliser votre soutenance.";
             default ->
                     "Notification de type " + request.type() + (status != null ? (" - statut " + status) : "");
         };
@@ -186,5 +205,32 @@ public class NotificationServiceImpl implements NotificationService {
         if (map == null) return null;
         Object v = map.get(key);
         return Objects.toString(v, null);
+    }
+
+    @Override
+    public NotificationResponse markAsRead(UUID notificationId) {
+        Notification notification = repository.findById(notificationId)
+                .orElseThrow(() -> new EntityNotFoundException("Notification not found"));
+        notification.setReadAt(Instant.now());
+        notification.setStatus(NotificationStatus.READ);
+        Notification saved = repository.save(notification);
+        return toResponse(saved);
+    }
+
+    @Override
+    public void markAllAsRead(UUID accountId) {
+        List<Notification> unread = repository.findAllByAccountIdAndReadAtIsNull(accountId);
+        Instant now = Instant.now();
+        for (Notification notification : unread) {
+            notification.setReadAt(now);
+            notification.setStatus(NotificationStatus.READ);
+        }
+        repository.saveAll(unread);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public long getUnreadCount(UUID accountId) {
+        return repository.countByAccountIdAndReadAtIsNull(accountId);
     }
 }

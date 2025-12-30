@@ -19,10 +19,14 @@ import {
 } from './models';
 import {
   CreateSoutenanceRequest,
+  DirectorApprovalRequest,
+  RapporteurReportRequest,
   ScheduleSoutenanceRequest,
+  SetResultRequest,
   SoutenanceResponse,
   UpdateJuryRequest,
-  UpdateSoutenanceStatusRequest
+  UpdateSoutenanceStatusRequest,
+  NotificationResponse
 } from './models';
 
 @Injectable({ providedIn: 'root' })
@@ -176,5 +180,72 @@ export class ApiService {
 
   validateJury(id: string) {
     return this.http.post<SoutenanceResponse>(`${this.base}/api/soutenances/${id}/jury/validate`, {});
+  }
+
+  // Director approval
+  approveByDirector(id: string, body: DirectorApprovalRequest) {
+    return this.http.post<SoutenanceResponse>(`${this.base}/api/soutenances/${id}/director-approval`, body);
+  }
+
+  // Rapporteur report
+  submitRapporteurReport(id: string, body: RapporteurReportRequest) {
+    return this.http.post<SoutenanceResponse>(`${this.base}/api/soutenances/${id}/rapporteur-report`, body);
+  }
+
+  // Set result
+  setResult(id: string, body: SetResultRequest) {
+    return this.http.post<SoutenanceResponse>(`${this.base}/api/soutenances/${id}/result`, body);
+  }
+
+  // Get soutenances approaching 6-year limit
+  getApproachingSixYearLimit() {
+    return this.http.get<SoutenanceResponse[]>(`${this.base}/api/soutenances/alerts/six-year-limit`);
+  }
+
+  // Manually trigger duration alerts
+  sendDurationAlerts() {
+    return this.http.post<void>(`${this.base}/api/soutenances/alerts/send-duration-alerts`, {});
+  }
+
+  // --- PDF Document Generation ---
+  generateAttestation(soutenanceId: string) {
+    return this.http.get(`${this.base}/api/soutenances/${soutenanceId}/documents/attestation`, {
+      responseType: 'blob'
+    });
+  }
+
+  generateAutorisation(soutenanceId: string) {
+    return this.http.get(`${this.base}/api/soutenances/${soutenanceId}/documents/autorisation`, {
+      responseType: 'blob'
+    });
+  }
+
+  generateProcesVerbal(soutenanceId: string) {
+    return this.http.get(`${this.base}/api/soutenances/${soutenanceId}/documents/proces-verbal`, {
+      responseType: 'blob'
+    });
+  }
+
+  generateProcesVerbalComplet(soutenanceId: string) {
+    return this.http.get(`${this.base}/api/soutenances/${soutenanceId}/documents/proces-verbal-complet`, {
+      responseType: 'blob'
+    });
+  }
+
+  // --- Notifications ---
+  getNotificationsForAccount(accountId: string) {
+    return this.http.get<NotificationResponse[]>(`${this.base}/api/notifications/by-account/${accountId}`);
+  }
+
+  getMyNotifications() {
+    return this.http.get<NotificationResponse[]>(`${this.base}/api/notifications/me`);
+  }
+
+  markNotificationAsRead(notificationId: string) {
+    return this.http.patch<NotificationResponse>(`${this.base}/api/notifications/${notificationId}/read`, {});
+  }
+
+  markAllNotificationsAsRead(accountId: string) {
+    return this.http.patch<void>(`${this.base}/api/notifications/by-account/${accountId}/read-all`, {});
   }
 }

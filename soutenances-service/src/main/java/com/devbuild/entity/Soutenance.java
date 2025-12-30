@@ -1,5 +1,6 @@
 package com.devbuild.entity;
 
+import com.devbuild.enums.SoutenanceResult;
 import com.devbuild.enums.SoutenanceStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -115,6 +116,62 @@ public class Soutenance {
     @Column(name = "jury_validated", nullable = false)
     @Builder.Default
     private boolean juryValidated = false;
+
+    // ===== Director Approval =====
+    @Column(name = "director_approved", nullable = false)
+    @Builder.Default
+    private boolean directorApproved = false;
+
+    @Column(name = "director_approval_date")
+    private LocalDateTime directorApprovalDate;
+
+    @Column(name = "director_comments", length = 1000)
+    private String directorComments;
+
+    // ===== Rapporteur Reports =====
+    @Column(name = "rapporteur1_report_url", length = 500)
+    private String rapporteur1ReportUrl;
+
+    @Column(name = "rapporteur1_favorable")
+    private Boolean rapporteur1Favorable;
+
+    @Column(name = "rapporteur1_report_date")
+    private LocalDateTime rapporteur1ReportDate;
+
+    @Column(name = "rapporteur1_comments", length = 1000)
+    private String rapporteur1Comments;
+
+    @Column(name = "rapporteur2_report_url", length = 500)
+    private String rapporteur2ReportUrl;
+
+    @Column(name = "rapporteur2_favorable")
+    private Boolean rapporteur2Favorable;
+
+    @Column(name = "rapporteur2_report_date")
+    private LocalDateTime rapporteur2ReportDate;
+
+    @Column(name = "rapporteur2_comments", length = 1000)
+    private String rapporteur2Comments;
+
+    @Column(name = "all_rapporteurs_favorable", nullable = false)
+    @Builder.Default
+    private boolean allRapporteursFavorable = false;
+
+    // ===== Soutenance Result =====
+    @Enumerated(EnumType.STRING)
+    @Column(name = "result", length = 50)
+    private SoutenanceResult result;
+
+    @Column(name = "result_date")
+    private LocalDateTime resultDate;
+
+    @Column(name = "result_comments", length = 1000)
+    private String resultComments;
+
+    // ===== Duration Alert =====
+    @Column(name = "duration_alert_sent", nullable = false)
+    @Builder.Default
+    private boolean durationAlertSent = false;
 
     @OneToMany(mappedBy = "soutenance", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default

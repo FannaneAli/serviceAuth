@@ -12,6 +12,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.annotations.UuidGenerator;
 
 import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -33,6 +34,9 @@ public class Soutenance {
 
     @Column(name = "doctorant_account_id", nullable = false, updatable = false)
     private UUID doctorantAccountId;
+
+    @Column(name = "doctorant_email", length = 200)
+    private String doctorantEmail;
 
     @Column(name = "thesis_title", nullable = false, length = 300)
     private String thesisTitle;
@@ -58,11 +62,21 @@ public class Soutenance {
     @Column(name = "publications_count")
     private Integer publicationsCount;
 
+    @Column(name = "publications_q1q2_count")
+    private Integer publicationsQ1Q2Count;
+
     @Column(name = "conferences_count")
     private Integer conferencesCount;
 
     @Column(name = "training_hours")
     private Integer trainingHours;
+
+    @Column(name = "initial_enrollment_date")
+    private LocalDate initialEnrollmentDate;
+
+    @Column(name = "derogation_approved", nullable = false)
+    @Builder.Default
+    private boolean derogationApproved = false;
 
     @Column(name = "prerequisites_valid", nullable = false)
     @Builder.Default
@@ -84,6 +98,23 @@ public class Soutenance {
 
     @Column(name = "location", length = 200)
     private String location;
+
+    @Column(name = "authorized", nullable = false)
+    @Builder.Default
+    private boolean authorized = false;
+
+    @Column(name = "authorization_document_url", length = 500)
+    private String authorizationDocumentUrl;
+
+    @Column(name = "attestation_url", length = 500)
+    private String attestationUrl;
+
+    @Column(name = "proces_verbal_url", length = 500)
+    private String procesVerbalUrl;
+
+    @Column(name = "jury_validated", nullable = false)
+    @Builder.Default
+    private boolean juryValidated = false;
 
     @OneToMany(mappedBy = "soutenance", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default

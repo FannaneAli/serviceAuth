@@ -20,6 +20,10 @@ spring:
   jackson:
     serialization:
       WRITE_DATES_AS_TIMESTAMPS: false
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+    producer:
+      value-serializer: org.springframework.kafka.support.serializer.StringOrBytesSerializer
 
 eureka:
   client:
@@ -58,3 +62,13 @@ soutenances:
       publications-report: true
       training-certificates: true
       handwritten-request: true
+
+app:
+  jwt:
+    issuer: serviceAuth
+    secret: ${APP_JWT_SECRET:T1Yt9cV5yZ0R3Q0p4uHn8Aq2Lw7mN3sX6pB4dF1kJ9rE2tV8cH5qZ7yW0uM6nR3}
+    clock-skew-seconds: 60
+  kafka:
+    topics:
+      soutenances: ${KAFKA_SOUTENANCES_TOPIC:soutenances}
+      notifications: ${KAFKA_NOTIFICATIONS_TOPIC:notifications}

@@ -1,32 +1,25 @@
-package com.devbuild.config;
+package com.micro.notification.config;
 
-import com.devbuild.security.JwtAuthFilter;
-import com.devbuild.security.JwtVerifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableMethodSecurity
 public class SecurityConfig {
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http, JwtVerifier verifier) throws Exception {
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/actuator/health").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/soutenances/public/**").permitAll()
-                        .anyRequest().authenticated()
-                )
-                .addFilterBefore(new JwtAuthFilter(verifier), UsernamePasswordAuthenticationFilter.class);
-
+                        .anyRequest().permitAll() // TODO integrate JWT/roles when auth service is wired
+                );
         return http.build();
     }
 }

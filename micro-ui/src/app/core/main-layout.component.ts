@@ -20,12 +20,20 @@ import { TopControlsComponent } from './top-controls.component';
             <span class="nav-icon">🏠</span>
             <span class="label">{{ 'nav.dashboard' | t }}</span>
           </a>
-          <a *ngIf="role==='DOCTORANT'" routerLink="/doctorant" class="nav-chip icon-only" aria-label="{{ 'nav.doctorant' | t }}">
+          <a *ngIf="role==='DOCTORANT'" routerLink="/soutenances" class="nav-chip icon-only" aria-label="Soutenances">
             <span class="nav-icon">🎓</span>
+            <span class="label">Soutenances</span>
+          </a>
+          <a *ngIf="role==='DIRECTEUR' || role==='ADMIN' || role==='SUPERUSER'" routerLink="/soutenances/revue" class="nav-chip icon-only" aria-label="Revue soutenances">
+            <span class="nav-icon">✅</span>
+            <span class="label">Revue sout.</span>
+          </a>
+          <a *ngIf="role==='DOCTORANT'" routerLink="/doctorant" class="nav-chip icon-only" aria-label="{{ 'nav.doctorant' | t }}">
+            <span class="nav-icon">📘</span>
             <span class="label">{{ 'nav.doctorant' | t }}</span>
           </a>
           <a *ngIf="role==='DIRECTEUR'" routerLink="/encadrant" class="nav-chip icon-only" aria-label="{{ 'nav.encadrant' | t }}">
-            <span class="nav-icon">🧭</span>
+            <span class="nav-icon">🧑‍🏫</span>
             <span class="label">{{ 'nav.encadrant' | t }}</span>
           </a>
           <ng-container *ngIf="isSuperuser()">
@@ -33,7 +41,7 @@ import { TopControlsComponent } from './top-controls.component';
               <span class="nav-icon">📊</span><span class="label">Vue globale</span>
             </a>
             <a routerLink="/superuser" [queryParams]="{ section: 'accounts' }" class="nav-chip icon-only" aria-label="Tous les comptes">
-              <span class="nav-icon">📋</span><span class="label">Tous les comptes</span>
+              <span class="nav-icon">👥</span><span class="label">Tous les comptes</span>
             </a>
             <a routerLink="/superuser" [queryParams]="{ section: 'pending' }" class="nav-chip icon-only" aria-label="En attente">
               <span class="nav-icon">⏳</span><span class="label">En attente</span>
@@ -50,7 +58,7 @@ import { TopControlsComponent } from './top-controls.component';
           </ng-container>
         </div>
         <button class="logout" (click)="logout()">
-          <span class="nav-icon">↩</span>
+          <span class="nav-icon">⎋</span>
         </button>
       </nav>
 

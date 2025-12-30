@@ -17,9 +17,15 @@ public interface SoutenanceService {
 
     List<SoutenanceResponse> getByDoctorant(UUID doctorantAccountId);
 
+    List<SoutenanceResponse> getByStatus(com.devbuild.enums.SoutenanceStatus status);
+
+    SoutenanceResponse authorize(UUID soutenanceId, com.devbuild.dto.AuthorizeSoutenanceRequest request);
+
     SoutenanceResponse updateStatus(UUID soutenanceId, UpdateSoutenanceStatusRequest request);
 
     SoutenanceResponse schedule(UUID soutenanceId, String location, LocalDateTime when);
 
     SoutenanceResponse replaceJury(UUID soutenanceId, List<JuryMemberRequest> members);
+
+    SoutenanceResponse validateJury(UUID soutenanceId);
 }

@@ -392,6 +392,7 @@ button:disabled { opacity: 0.6; cursor: not-allowed; box-shadow: none; }
 .flex { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
 .center-row { justify-content: center; }
 .center-text { text-align: center; width: 100%; }
+.muted { color: var(--muted); }
 .badge {
   padding: 4px 10px;
   border-radius: 999px;

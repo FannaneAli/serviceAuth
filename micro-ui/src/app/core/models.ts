@@ -115,3 +115,90 @@ export interface Laboratory {
   name: string;
   description?: string;
 }
+
+// Soutenances
+export type SoutenanceStatus =
+  | 'DRAFT'
+  | 'SUBMITTED'
+  | 'UNDER_REVIEW'
+  | 'REJECTED'
+  | 'APPROVED'
+  | 'SCHEDULED'
+  | 'DEFENDED'
+  | 'CLOSED';
+
+export type JuryRole = 'PRESIDENT' | 'RAPPORTEUR' | 'EXAMINATEUR' | 'INVITE';
+
+export interface JuryMember {
+  id?: string;
+  fullName: string;
+  email?: string;
+  institution?: string;
+  role: JuryRole;
+  external?: boolean;
+}
+
+export interface CreateSoutenanceRequest {
+  doctorantAccountId: string;
+  doctorantEmail: string;
+  thesisTitle: string;
+  thesisSummary?: string;
+  handwrittenRequestUrl: string;
+  manuscriptUrl?: string;
+  antiPlagiarismReportUrl?: string;
+  publicationsReportUrl?: string;
+  trainingCertificatesUrl?: string;
+  publicationsCount?: number;
+  publicationsQ1Q2Count?: number;
+  conferencesCount?: number;
+  trainingHours?: number;
+  initialEnrollmentDate?: string;
+  derogationApproved?: boolean;
+  desiredDateTime?: string;
+  desiredLocation?: string;
+  jury?: JuryMember[];
+}
+
+export interface SoutenanceResponse {
+  id: string;
+  doctorantAccountId: string;
+  doctorantEmail?: string;
+  thesisTitle: string;
+  thesisSummary?: string;
+  handwrittenRequestUrl: string;
+  manuscriptUrl?: string;
+  antiPlagiarismReportUrl?: string;
+  publicationsReportUrl?: string;
+  trainingCertificatesUrl?: string;
+  publicationsCount?: number;
+  publicationsQ1Q2Count?: number;
+  conferencesCount?: number;
+  trainingHours?: number;
+  initialEnrollmentDate?: string;
+  derogationApproved?: boolean;
+  prerequisitesValid: boolean;
+  status: SoutenanceStatus;
+  requestedDateTime?: string;
+  requestedLocation?: string;
+  scheduledDateTime?: string;
+  location?: string;
+  authorized?: boolean;
+  authorizationDocumentUrl?: string;
+  attestationUrl?: string;
+  procesVerbalUrl?: string;
+  juryValidated?: boolean;
+  jury: JuryMember[];
+}
+
+export interface UpdateSoutenanceStatusRequest {
+  newStatus: SoutenanceStatus;
+}
+
+export interface ScheduleSoutenanceRequest {
+  location: string;
+  when: string;
+}
+
+export interface UpdateJuryRequest {
+  members: JuryMember[];
+}

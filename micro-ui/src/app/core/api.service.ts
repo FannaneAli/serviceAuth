@@ -17,6 +17,13 @@ import {
   Department,
   Laboratory
 } from './models';
+import {
+  CreateSoutenanceRequest,
+  ScheduleSoutenanceRequest,
+  SoutenanceResponse,
+  UpdateJuryRequest,
+  UpdateSoutenanceStatusRequest
+} from './models';
 
 @Injectable({ providedIn: 'root' })
 export class ApiService {
@@ -130,5 +137,44 @@ export class ApiService {
 
   rejectAccount(id: string) {
     return this.http.post<AccountResponse>(`${this.base}/admin/accounts/${id}/reject`, {});
+  }
+
+  // --- Soutenances ---
+  createSoutenance(body: CreateSoutenanceRequest) {
+    return this.http.post<SoutenanceResponse>(`${this.base}/api/soutenances`, body);
+  }
+
+  listSoutenancesForDoctorant(doctorantAccountId: string) {
+    return this.http.get<SoutenanceResponse[]>(`${this.base}/api/soutenances/by-doctorant/${doctorantAccountId}`);
+  }
+
+  getSoutenance(id: string) {
+    return this.http.get<SoutenanceResponse>(`${this.base}/api/soutenances/${id}`);
+  }
+
+  updateSoutenanceStatus(id: string, body: UpdateSoutenanceStatusRequest) {
+    return this.http.patch<SoutenanceResponse>(`${this.base}/api/soutenances/${id}/status`, body);
+  }
+
+  authorizeSoutenance(id: string, authorizationDocumentUrl?: string) {
+    return this.http.post<SoutenanceResponse>(`${this.base}/api/soutenances/${id}/authorize`, {
+      authorizationDocumentUrl
+    });
+  }
+
+  listSoutenancesByStatus(status: string) {
+    return this.http.get<SoutenanceResponse[]>(`${this.base}/api/soutenances/status/${status}`);
+    }
+
+  scheduleSoutenance(id: string, body: ScheduleSoutenanceRequest) {
+    return this.http.patch<SoutenanceResponse>(`${this.base}/api/soutenances/${id}/schedule`, body);
+  }
+
+  replaceJury(id: string, body: UpdateJuryRequest) {
+    return this.http.put<SoutenanceResponse>(`${this.base}/api/soutenances/${id}/jury`, body);
+  }
+
+  validateJury(id: string) {
+    return this.http.post<SoutenanceResponse>(`${this.base}/api/soutenances/${id}/jury/validate`, {});
   }
 }

@@ -19,6 +19,10 @@ spring:
           uri: lb://soutenances-service
           predicates:
             - Path=/api/soutenances/**,/soutenances/**
+        - id: notification-service
+          uri: lb://notification-service
+          predicates:
+            - Path=/notifications/**
       default-filters: []
       globalcors:
         add-to-simple-url-handler-mapping: true

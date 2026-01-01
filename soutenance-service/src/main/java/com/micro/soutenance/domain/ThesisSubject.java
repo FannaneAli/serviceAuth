@@ -21,7 +21,7 @@ public class ThesisSubject {
     @Column(nullable = false)
     private UUID doctorantId;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private UUID encadrantId;
 
     @Column(nullable = false)

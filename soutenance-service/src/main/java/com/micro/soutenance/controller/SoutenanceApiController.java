@@ -333,6 +333,129 @@ public class SoutenanceApiController {
         return ResponseEntity.ok(response);
     }
 
+    // ============== Document Generation Endpoints ==============
+
+    /**
+     * Generate attestation PDF
+     */
+    @GetMapping("/{id}/documents/attestation")
+    public ResponseEntity<byte[]> generateAttestation(@PathVariable UUID id) {
+        SoutenanceRequest sr = requestRepository.findById(id).orElse(null);
+        if (sr == null) {
+            return ResponseEntity.notFound().build();
+        }
+        ThesisSubject subject = subjectRepository.findById(sr.getSubjectId()).orElse(null);
+        
+        byte[] pdf = generateSimplePdf("ATTESTATION DE DÉPÔT DE THÈSE", sr, subject);
+        
+        return ResponseEntity.ok()
+                .header("Content-Type", "application/pdf")
+                .header("Content-Disposition", "attachment; filename=attestation-" + id + ".pdf")
+                .body(pdf);
+    }
+
+    /**
+     * Generate autorisation PDF
+     */
+    @GetMapping("/{id}/documents/autorisation")
+    public ResponseEntity<byte[]> generateAutorisation(@PathVariable UUID id) {
+        SoutenanceRequest sr = requestRepository.findById(id).orElse(null);
+        if (sr == null) {
+            return ResponseEntity.notFound().build();
+        }
+        ThesisSubject subject = subjectRepository.findById(sr.getSubjectId()).orElse(null);
+        
+        byte[] pdf = generateSimplePdf("AUTORISATION DE SOUTENANCE", sr, subject);
+        
+        return ResponseEntity.ok()
+                .header("Content-Type", "application/pdf")
+                .header("Content-Disposition", "attachment; filename=autorisation-" + id + ".pdf")
+                .body(pdf);
+    }
+
+    /**
+     * Generate procès-verbal PDF
+     */
+    @GetMapping("/{id}/documents/proces-verbal")
+    public ResponseEntity<byte[]> generateProcesVerbal(@PathVariable UUID id) {
+        SoutenanceRequest sr = requestRepository.findById(id).orElse(null);
+        if (sr == null) {
+            return ResponseEntity.notFound().build();
+        }
+        ThesisSubject subject = subjectRepository.findById(sr.getSubjectId()).orElse(null);
+        
+        byte[] pdf = generateSimplePdf("PROCÈS-VERBAL DE SOUTENANCE", sr, subject);
+        
+        return ResponseEntity.ok()
+                .header("Content-Type", "application/pdf")
+                .header("Content-Disposition", "attachment; filename=proces-verbal-" + id + ".pdf")
+                .body(pdf);
+    }
+
+    /**
+     * Generate procès-verbal complet PDF
+     */
+    @GetMapping("/{id}/documents/proces-verbal-complet")
+    public ResponseEntity<byte[]> generateProcesVerbalComplet(@PathVariable UUID id) {
+        SoutenanceRequest sr = requestRepository.findById(id).orElse(null);
+        if (sr == null) {
+            return ResponseEntity.notFound().build();
+        }
+        ThesisSubject subject = subjectRepository.findById(sr.getSubjectId()).orElse(null);
+        
+        byte[] pdf = generateSimplePdf("PROCÈS-VERBAL COMPLET DE SOUTENANCE", sr, subject);
+        
+        return ResponseEntity.ok()
+                .header("Content-Type", "application/pdf")
+                .header("Content-Disposition", "attachment; filename=proces-verbal-complet-" + id + ".pdf")
+                .body(pdf);
+    }
+
+    /**
+     * Simple PDF generator (placeholder - returns a basic text-based PDF)
+     */
+    private byte[] generateSimplePdf(String title, SoutenanceRequest sr, ThesisSubject subject) {
+        String content = buildPdfContent(title, sr, subject);
+        // Simple PDF structure
+        StringBuilder pdf = new StringBuilder();
+        pdf.append("%PDF-1.4\n");
+        pdf.append("1 0 obj << /Type /Catalog /Pages 2 0 R >> endobj\n");
+        pdf.append("2 0 obj << /Type /Pages /Kids [3 0 R] /Count 1 >> endobj\n");
+        pdf.append("3 0 obj << /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Contents 4 0 R /Resources << /Font << /F1 5 0 R >> >> >> endobj\n");
+        
+        String textContent = "BT /F1 12 Tf 50 750 Td (" + escapeForPdf(title) + ") Tj 0 -30 Td (" + escapeForPdf(content) + ") Tj ET";
+        pdf.append("4 0 obj << /Length ").append(textContent.length()).append(" >> stream\n");
+        pdf.append(textContent).append("\nendstream endobj\n");
+        pdf.append("5 0 obj << /Type /Font /Subtype /Type1 /BaseFont /Helvetica >> endobj\n");
+        pdf.append("xref\n0 6\n");
+        pdf.append("0000000000 65535 f \n");
+        pdf.append("0000000009 00000 n \n");
+        pdf.append("0000000058 00000 n \n");
+        pdf.append("0000000115 00000 n \n");
+        pdf.append("0000000266 00000 n \n");
+        pdf.append("0000000400 00000 n \n");
+        pdf.append("trailer << /Size 6 /Root 1 0 R >>\n");
+        pdf.append("startxref\n479\n%%EOF");
+        
+        return pdf.toString().getBytes(java.nio.charset.StandardCharsets.UTF_8);
+    }
+
+    private String buildPdfContent(String title, SoutenanceRequest sr, ThesisSubject subject) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Titre: ").append(subject != null ? subject.getTitle() : "N/A");
+        sb.append(" | Date: ").append(sr.getDefenseDate() != null ? sr.getDefenseDate().toString() : "Non definie");
+        sb.append(" | Lieu: ").append(sr.getDefenseLocation() != null ? sr.getDefenseLocation() : "N/A");
+        return sb.toString();
+    }
+
+    private String escapeForPdf(String text) {
+        if (text == null) return "";
+        return text.replace("\\", "\\\\")
+                   .replace("(", "\\(")
+                   .replace(")", "\\)")
+                   .replace("\n", " ");
+    }
+
     /**
      * Convert domain objects to API response format expected by frontend
      */

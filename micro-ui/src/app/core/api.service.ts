@@ -15,7 +15,8 @@ import {
   UpdateEncadrantProfileRequest,
   CreateAdminRequest,
   Department,
-  Laboratory
+  Laboratory,
+  Juror
 } from './models';
 import {
   CreateSoutenanceRequest,
@@ -123,16 +124,37 @@ export class ApiService {
     return this.http.delete<void>(`${this.base}/admin/laboratories/${id}`);
   }
 
+  // Jurors (ADMIN)
+  listJurors() {
+    return this.http.get<Juror[]>(`${this.base}/admin/jures`);
+  }
+
+  createJuror(body: { name: string; email: string; university?: string; note?: string }) {
+    return this.http.post<Juror>(`${this.base}/admin/jures`, body);
+  }
+
+  updateJuror(id: string, body: { name: string; email: string; university?: string; note?: string }) {
+    return this.http.put<Juror>(`${this.base}/admin/jures/${id}`, body);
+  }
+
+  deleteJuror(id: string) {
+    return this.http.delete<void>(`${this.base}/admin/jures/${id}`);
+  }
+
   createAdmin(body: CreateAdminRequest) {
     return this.http.post<AccountResponse>(`${this.base}/admin/accounts/admins`, body);
   }
 
-  activateAdmin(id: string) {
+  activateAccount(id: string) {
     return this.http.post<AccountResponse>(`${this.base}/admin/accounts/${id}/activate`, {});
   }
 
-  suspendAdmin(id: string) {
+  suspendAccount(id: string) {
     return this.http.post<AccountResponse>(`${this.base}/admin/accounts/${id}/suspend`, {});
+  }
+
+  deleteAccount(id: string) {
+    return this.http.delete<AccountResponse>(`${this.base}/admin/accounts/${id}`);
   }
 
   approveAccount(id: string) {

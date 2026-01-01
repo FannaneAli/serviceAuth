@@ -1,0 +1,24 @@
+server:
+  port: 0
+spring:
+  application:
+    name: soutenance-service
+  datasource:
+    url: jdbc:postgresql://localhost:5432/soutenance
+    username: postgres
+    password: postgres
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
+    show-sql: false
+  jackson:
+    serialization:
+      WRITE_DATES_AS_TIMESTAMPS: false
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/

@@ -38,19 +38,19 @@ public class AdminAccountsController {
     }
 
     @GetMapping("/pending")
-    @PreAuthorize("hasRole('SUPERUSER')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<AccountResponse>> listPending() {
         return ResponseEntity.ok(accountService.listPending());
     }
 
     @PostMapping("/{id}/approve")
-    @PreAuthorize("hasRole('SUPERUSER')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<AccountResponse> approve(@PathVariable UUID id) {
         return ResponseEntity.ok(accountService.approve(id));
     }
 
     @PostMapping("/{id}/reject")
-    @PreAuthorize("hasRole('SUPERUSER')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<AccountResponse> reject(@PathVariable UUID id) {
         return ResponseEntity.ok(accountService.reject(id));
     }
@@ -58,12 +58,18 @@ public class AdminAccountsController {
     @PostMapping("/{id}/activate")
     @PreAuthorize("hasRole('SUPERUSER')")
     public ResponseEntity<AccountResponse> activate(@PathVariable UUID id) {
-        return ResponseEntity.ok(accountService.activateAdmin(id));
+        return ResponseEntity.ok(accountService.activateAccount(id));
     }
 
     @PostMapping("/{id}/suspend")
     @PreAuthorize("hasRole('SUPERUSER')")
     public ResponseEntity<AccountResponse> suspend(@PathVariable UUID id) {
-        return ResponseEntity.ok(accountService.suspendAdmin(id));
+        return ResponseEntity.ok(accountService.suspendAccount(id));
+    }
+
+    @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('SUPERUSER')")
+    public ResponseEntity<AccountResponse> delete(@PathVariable UUID id) {
+        return ResponseEntity.ok(accountService.deleteAccount(id));
     }
 }

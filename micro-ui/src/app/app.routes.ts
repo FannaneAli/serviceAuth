@@ -1,16 +1,13 @@
 import { Routes } from '@angular/router';
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
 import { AdminComponent } from './pages/admin/admin.component';
+import { DoctorantComponent } from './pages/doctorant/doctorant.component';
+import { EncadrantComponent } from './pages/encadrant/encadrant.component';
+import { AdminPortalComponent } from './pages/admin-portal/admin-portal.component';
 import { authGuard } from './core/auth.guard';
-import { adminGuard } from './core/admin.guard';
-import { doctorantGuard } from './core/doctorant.guard';
-import { directorGuard } from './core/director.guard';
+import { roleGuard } from './core/role.guard';
 import { AuthPageComponent } from './pages/auth/auth-page.component';
 import { MainLayoutComponent } from './core/main-layout.component';
-import { SoutenancesComponent } from './pages/soutenances/soutenances.component';
-import { ReviewSoutenancesComponent } from './pages/soutenances/review-soutenances.component';
-import { DirectorSoutenancesComponent } from './pages/soutenances/director-soutenances.component';
-import { NotificationsComponent } from './pages/notifications/notifications.component';
 
 export const routes: Routes = [
   {
@@ -19,14 +16,10 @@ export const routes: Routes = [
     canActivateChild: [authGuard],
     children: [
       { path: 'dashboard', component: DashboardComponent },
-      { path: 'doctorant', component: DashboardComponent },
-      { path: 'encadrant', component: DashboardComponent },
-      { path: 'soutenances', component: SoutenancesComponent, canActivate: [doctorantGuard] },
-      { path: 'soutenances/directeur', component: DirectorSoutenancesComponent, canActivate: [directorGuard] },
-      { path: 'soutenances/revue', component: ReviewSoutenancesComponent, canActivate: [adminGuard] },
-      { path: 'notifications', component: NotificationsComponent, canActivate: [doctorantGuard] },
-      { path: 'admin', component: AdminComponent, canActivate: [adminGuard] },
-      { path: 'superuser', component: AdminComponent, canActivate: [adminGuard] },
+      { path: 'doctorant', component: DoctorantComponent, canActivate: [roleGuard(['DOCTORANT'])] },
+      { path: 'encadrant', component: EncadrantComponent, canActivate: [roleGuard(['DIRECTEUR'])] },
+      { path: 'admin', component: AdminPortalComponent, canActivate: [roleGuard(['ADMIN'])] },
+      { path: 'superuser', component: AdminComponent, canActivate: [roleGuard(['SUPERUSER'])] },
       { path: '', pathMatch: 'full', redirectTo: 'dashboard' }
     ]
   },

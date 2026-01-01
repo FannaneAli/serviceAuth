@@ -17,8 +17,8 @@ public interface AccountService {
     AccountResponse reject(UUID id);
     List<AccountResponse> listAdmins();
     List<AccountResponse> listAll();
-    AccountResponse activateAdmin(UUID id);
-    AccountResponse suspendAdmin(UUID id);
+    AccountResponse activateAccount(UUID id);
+    AccountResponse suspendAccount(UUID id);
+    AccountResponse deleteAccount(UUID id);
     AccountResponse verifyEmail(String token);
 }
-

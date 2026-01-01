@@ -10,4 +10,5 @@ import java.util.UUID;
 public interface EmailVerificationTokenRepository extends JpaRepository<EmailVerificationToken, UUID> {
     Optional<EmailVerificationToken> findByTokenAndUsedAtIsNull(String token);
     void deleteAllByExpiresAtBefore(Instant now);
+    void deleteAllByAccount_Id(UUID accountId);
 }

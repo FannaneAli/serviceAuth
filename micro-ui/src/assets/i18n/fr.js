@@ -28,7 +28,7 @@ export default {
     dashboard: 'Dashboard',
     doctorant: 'Espace doctorant',
     encadrant: 'Espace encadrant',
-    admin: 'Admin',
+    admin: 'Administration',
     superuser: 'Superuser',
     logout: 'Logout'
   },
@@ -67,7 +67,8 @@ export default {
       pending: 'Comptes en attente',
       admins: 'Admins',
       structures: 'Departements & Labos',
-      create: 'Creer un admin'
+      create: 'Creer un admin',
+      jurors: 'Jures'
     },
     overview: {
       total: 'Comptes total',

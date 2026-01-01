@@ -28,27 +28,51 @@ public class EmailNotificationService {
 
     public void sendVerification(Account account, String token) {
         String link = verificationBaseUrl + token;
-        String subject = "Vérification de votre email";
+        String subject = "Verification de votre email";
         String body = "Bonjour " + account.getUsername() + ",\n\n"
                 + "Merci pour votre inscription. Merci de confirmer votre email en cliquant sur le lien suivant (valide " + ttl.toHours() + "h) :\n"
                 + link + "\n\n"
-                + "Si vous n'êtes pas à l'origine de cette demande, ignorez cet email.";
+                + "Si vous n'etes pas a l'origine de cette demande, ignorez cet email.";
         mailSender.send(account.getEmail(), subject, body);
     }
 
     public void sendApproval(Account account) {
-        String subject = "Votre inscription est acceptée";
+        String subject = "Votre inscription est acceptee";
         String body = "Bonjour " + account.getUsername() + ",\n\n"
-                + "Votre compte a été approuvé. Vous pouvez vous connecter : " + loginUrl + "\n\n"
-                + "Bonne journée.";
+                + "Votre compte a ete approuve. Vous pouvez vous connecter : " + loginUrl + "\n\n"
+                + "Bonne journee.";
         mailSender.send(account.getEmail(), subject, body);
     }
 
     public void sendRejection(Account account) {
-        String subject = "Votre inscription est refusée";
+        String subject = "Votre inscription est refusee";
         String body = "Bonjour " + account.getUsername() + ",\n\n"
-                + "Votre demande d'inscription a été refusée.\n\n"
+                + "Votre demande d'inscription a ete refusee.\n\n"
                 + "Si vous pensez qu'il s'agit d'une erreur, contactez l'administrateur.";
+        mailSender.send(account.getEmail(), subject, body);
+    }
+
+    public void sendSuspension(Account account) {
+        String subject = "Votre compte est suspendu";
+        String body = "Bonjour " + account.getUsername() + ",\n\n"
+                + "Votre compte a ete suspendu par un administrateur.\n"
+                + "Si vous pensez qu'il s'agit d'une erreur, merci de contacter le support.\n\n";
+        mailSender.send(account.getEmail(), subject, body);
+    }
+
+    public void sendReactivation(Account account) {
+        String subject = "Votre compte est reactive";
+        String body = "Bonjour " + account.getUsername() + ",\n\n"
+                + "Votre compte a ete reactive. Vous pouvez vous connecter : " + loginUrl + "\n\n"
+                + "Bonne journee.";
+        mailSender.send(account.getEmail(), subject, body);
+    }
+
+    public void sendDeletion(Account account) {
+        String subject = "Votre compte est supprime";
+        String body = "Bonjour " + account.getUsername() + ",\n\n"
+                + "Votre compte a ete supprime par un administrateur.\n"
+                + "Si vous pensez qu'il s'agit d'une erreur, merci de contacter le support.\n";
         mailSender.send(account.getEmail(), subject, body);
     }
 }

@@ -8,6 +8,9 @@ import com.micro.account.entity.Account;
 import com.micro.account.enums.AccountStatus;
 import com.micro.account.enums.Role;
 import com.micro.account.mapper.AccountMapper;
+import com.micro.account.repository.DoctorantProfileRepository;
+import com.micro.account.repository.EmailVerificationTokenRepository;
+import com.micro.account.repository.EncadrantProfileRepository;
 import com.micro.account.repository.AccountRepository;
 import com.micro.account.service.iservice.AccountService;
 import com.micro.account.service.mail.EmailNotificationService;
@@ -33,6 +36,9 @@ public class AccountServiceImpl implements AccountService {
     private final PasswordEncoder passwordEncoder;
     private final EmailVerificationService emailVerificationService;
     private final EmailNotificationService emailNotificationService;
+    private final DoctorantProfileRepository doctorantProfileRepository;
+    private final EncadrantProfileRepository encadrantProfileRepository;
+    private final EmailVerificationTokenRepository emailVerificationTokenRepository;
 
     @Override
     @Transactional
@@ -187,7 +193,7 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public List<AccountResponse> listAll() {
-        return accountRepository.findAll()
+        return accountRepository.findAllByPrimaryRoleNot(Role.SUPERUSER)
                 .stream()
                 .map(accountMapper::toDto)
                 .toList();
@@ -195,20 +201,36 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     @Transactional
-    public AccountResponse activateAdmin(UUID id) {
-        Account admin = loadAdminOrThrow(id);
-        admin.setStatus(AccountStatus.ACTIVE);
-        accountRepository.save(admin);
-        return accountMapper.toDto(admin);
+    public AccountResponse activateAccount(UUID id) {
+        Account acc = loadManagedAccount(id);
+        acc.setStatus(AccountStatus.ACTIVE);
+        accountRepository.save(acc);
+        emailNotificationService.sendReactivation(acc);
+        return accountMapper.toDto(acc);
     }
 
     @Override
     @Transactional
-    public AccountResponse suspendAdmin(UUID id) {
-        Account admin = loadAdminOrThrow(id);
-        admin.setStatus(AccountStatus.SUSPENDED);
-        accountRepository.save(admin);
-        return accountMapper.toDto(admin);
+    public AccountResponse suspendAccount(UUID id) {
+        Account acc = loadManagedAccount(id);
+        acc.setStatus(AccountStatus.SUSPENDED);
+        accountRepository.save(acc);
+        emailNotificationService.sendSuspension(acc);
+        return accountMapper.toDto(acc);
+    }
+
+    @Override
+    @Transactional
+    public AccountResponse deleteAccount(UUID id) {
+        Account acc = loadManagedAccount(id);
+        doctorantProfileRepository.findByAccount_Id(acc.getId())
+                .ifPresent(doctorantProfileRepository::delete);
+        encadrantProfileRepository.findByAccount_Id(acc.getId())
+                .ifPresent(encadrantProfileRepository::delete);
+        emailVerificationTokenRepository.deleteAllByAccount_Id(acc.getId());
+        accountRepository.delete(acc);
+        emailNotificationService.sendDeletion(acc);
+        return accountMapper.toDto(acc);
     }
 
     @Override
@@ -219,11 +241,11 @@ public class AccountServiceImpl implements AccountService {
         return accountMapper.toDto(acc);
     }
 
-    private Account loadAdminOrThrow(UUID id) {
+    private Account loadManagedAccount(UUID id) {
         Account acc = accountRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Compte introuvable."));
-        if (acc.getPrimaryRole() != Role.ADMIN) {
-            throw new IllegalArgumentException("Seuls les comptes ADMIN peuvent etre modifies ici.");
+        if (acc.getPrimaryRole() == Role.SUPERUSER) {
+            throw new IllegalArgumentException("Impossible de modifier le compte SUPERUSER.");
         }
         return acc;
     }

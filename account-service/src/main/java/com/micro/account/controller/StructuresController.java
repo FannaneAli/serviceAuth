@@ -46,7 +46,7 @@ public class StructuresController {
 
     // --- Admin only (creation / maj) ---
     @PostMapping("/admin/departments")
-    @PreAuthorize("hasAnyRole('ADMIN','SUPERUSER')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<DepartmentResponse> createDepartment(@Valid @RequestBody CreateDepartmentRequest req) {
         if (departmentRepository.existsByNameIgnoreCase(req.name())) {
             throw new IllegalStateException("Departement existe deja.");
@@ -60,7 +60,7 @@ public class StructuresController {
     }
 
     @PutMapping("/admin/departments/{id}")
-    @PreAuthorize("hasAnyRole('ADMIN','SUPERUSER')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<DepartmentResponse> updateDepartment(@PathVariable UUID id, @Valid @RequestBody CreateDepartmentRequest req) {
         Department dep = departmentRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Departement introuvable."));
@@ -71,7 +71,7 @@ public class StructuresController {
     }
 
     @DeleteMapping("/admin/departments/{id}")
-    @PreAuthorize("hasAnyRole('ADMIN','SUPERUSER')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> deleteDepartment(@PathVariable UUID id) {
         Department dep = departmentRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Departement introuvable."));
@@ -83,7 +83,7 @@ public class StructuresController {
     }
 
     @PostMapping("/admin/laboratories")
-    @PreAuthorize("hasAnyRole('ADMIN','SUPERUSER')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<LaboratoryResponse> createLaboratory(@Valid @RequestBody CreateLaboratoryRequest req) {
         if (laboratoryRepository.existsByNameIgnoreCase(req.name())) {
             throw new IllegalStateException("Laboratoire existe deja.");
@@ -97,7 +97,7 @@ public class StructuresController {
     }
 
     @PutMapping("/admin/laboratories/{id}")
-    @PreAuthorize("hasAnyRole('ADMIN','SUPERUSER')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<LaboratoryResponse> updateLaboratory(@PathVariable UUID id, @Valid @RequestBody CreateLaboratoryRequest req) {
         Laboratory lab = laboratoryRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Laboratoire introuvable."));
@@ -108,7 +108,7 @@ public class StructuresController {
     }
 
     @DeleteMapping("/admin/laboratories/{id}")
-    @PreAuthorize("hasAnyRole('ADMIN','SUPERUSER')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> deleteLaboratory(@PathVariable UUID id) {
         Laboratory lab = laboratoryRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Laboratoire introuvable."));

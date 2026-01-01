@@ -129,12 +129,17 @@ export interface Juror {
 export type SoutenanceStatus = 
   | 'DRAFT'
   | 'SUBMITTED'
+  | 'UNDER_REVIEW'
+  | 'APPROVED'
+  | 'REJECTED'
   | 'DIRECTOR_APPROVED'
   | 'DIRECTOR_REJECTED'
   | 'SCHEDULED'
   | 'RAPPORTEUR_REPORT_SUBMITTED'
   | 'AUTHORIZED'
+  | 'DEFENDED'
   | 'COMPLETED'
+  | 'CLOSED'
   | 'CANCELLED';
 
 export type SoutenanceResult = 
@@ -148,14 +153,18 @@ export type JuryRole =
   | 'RAPPORTEUR'
   | 'EXAMINATEUR'
   | 'DIRECTEUR'
-  | 'CO_DIRECTEUR';
+  | 'CO_DIRECTEUR'
+  | 'INVITE';
 
 export interface JuryMember {
   id?: string;
-  name: string;
-  email: string;
-  university: string;
+  name?: string;
+  fullName?: string;
+  email?: string;
+  university?: string;
+  institution?: string;
   role: JuryRole;
+  external?: boolean;
 }
 
 export interface JuryMemberResponse {
@@ -182,6 +191,8 @@ export interface SoutenanceResponse {
   scheduledDate?: string;
   location?: string;
   desiredLocation?: string;
+  requestedLocation?: string;
+  publicationsQ1Q2Count?: number;
   juryMembers?: JuryMemberResponse[];
   jury?: JuryMember[];
   directorComments?: string;
@@ -198,6 +209,10 @@ export interface SoutenanceResponse {
   directorApprovalDate?: string;
   // Rapporteur
   allRapporteursFavorable?: boolean;
+  rapporteur1Favorable?: boolean;
+  rapporteur2Favorable?: boolean;
+  // Jury validation
+  juryValidated?: boolean;
   // Authorization
   authorized?: boolean;
   // 6-year limit
@@ -234,7 +249,8 @@ export interface CreateSoutenanceRequest {
 }
 
 export interface UpdateSoutenanceStatusRequest {
-  status: SoutenanceStatus;
+  status?: SoutenanceStatus;
+  newStatus?: SoutenanceStatus;
   comments?: string;
 }
 
@@ -244,7 +260,8 @@ export interface DirectorApprovalRequest {
 }
 
 export interface ScheduleSoutenanceRequest {
-  scheduledDate: string;
+  scheduledDate?: string;
+  when?: string;
   location: string;
 }
 
@@ -256,12 +273,17 @@ export interface JuryMemberRequest {
 }
 
 export interface UpdateJuryRequest {
-  juryMembers: JuryMemberRequest[];
+  juryMembers?: JuryMemberRequest[];
+  members?: JuryMember[];
 }
 
 export interface RapporteurReportRequest {
-  report: string;
-  recommendation: 'FAVORABLE' | 'DEFAVORABLE' | 'RESERVE';
+  report?: string;
+  reportUrl?: string;
+  recommendation?: 'FAVORABLE' | 'DEFAVORABLE' | 'RESERVE';
+  rapporteurNumber?: 1 | 2;
+  favorable?: boolean;
+  comments?: string;
 }
 
 export interface SetResultRequest {

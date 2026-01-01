@@ -1,5 +1,5 @@
 server:
-  port: 8085
+  port: 8080
 
 spring:
   application:
@@ -14,9 +14,9 @@ spring:
         - id: account-service
           uri: lb://account-service
           predicates:
-            - Path=/accounts/**,/profiles/**,/admin/**,/departments/**,/laboratories/**
-        - id: soutenances-service
-          uri: lb://soutenances-service
+            - Path=/accounts/**,/profiles/**,/admin/**,/departments/**,/laboratories/**,/structures/**,/jurors/**
+        - id: soutenance-service
+          uri: lb://soutenance-service
           predicates:
             - Path=/api/soutenances/**,/soutenances/**
         - id: notification-service

@@ -1,7 +1,7 @@
-package com.devbuild.config;
+package com.micro.soutenance.config;
 
-import com.devbuild.security.JwtAuthFilter;
-import com.devbuild.security.JwtVerifier;
+import com.micro.soutenance.security.JwtAuthFilter;
+import com.micro.soutenance.security.JwtVerifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;

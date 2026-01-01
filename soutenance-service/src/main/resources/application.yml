@@ -1,18 +1,22 @@
 server:
-  port: 0
+  port: ${SERVER_PORT:8085}
+
 spring:
   application:
     name: soutenance-service
   datasource:
-    url: jdbc:postgresql://localhost:5432/soutenance
-    username: postgres
-    password: postgres
+    driver-class-name: org.postgresql.Driver
+    url: ${DB_URL_SOUTENANCE:jdbc:postgresql://localhost:5432/soutenance_db}
+    username: ${DB_USERNAME:postgres}
+    password: ${DB_PASSWORD:1234}
   jpa:
+    open-in-view: false
     hibernate:
-      ddl-auto: update
+      ddl-auto: ${DB_DDL_AUTO:update}
     properties:
       hibernate:
         format_sql: true
+        jdbc.lob.non_contextual_creation: true
     show-sql: false
   jackson:
     serialization:
@@ -21,4 +25,31 @@ spring:
 eureka:
   client:
     service-url:
-      defaultZone: http://localhost:8761/eureka/
+      defaultZone: ${EUREKA_SERVER:http://localhost:8761/eureka}
+  instance:
+    prefer-ip-address: true
+
+info:
+  app:
+    name: Soutenance Service
+    description: Microservice for soutenance management
+    version: 1.0.0
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: always
+
+logging:
+  level:
+    root: INFO
+
+app:
+  jwt:
+    issuer: serviceAuth
+    secret: ${APP_JWT_SECRET:T1Yt9cV5yZ0R3Q0p4uHn8Aq2Lw7mN3sX6pB4dF1kJ9rE2tV8cH5qZ7yW0uM6nR3}
+    clock-skew-seconds: 60

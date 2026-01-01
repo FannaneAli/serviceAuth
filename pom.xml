@@ -19,11 +19,10 @@
 	<modules>
 		<module>account-service</module>
 		<module>auth-service</module>
-		<module>soutenances-service</module>
+		<module>soutenance-service</module>
 		<module>notification-service</module>
 		<module>api-gateway</module>
 		<module>eureka-server</module>
-		<module>soutenance-service</module>
 	</modules>
 
 	<properties>

@@ -1,6 +1,5 @@
 server:
-  port: ${SERVER_PORT:8085}
-
+  port: 8086
 spring:
   application:
     name: soutenance-service
@@ -29,24 +28,11 @@ eureka:
   instance:
     prefer-ip-address: true
 
-info:
-  app:
-    name: Soutenance Service
-    description: Microservice for soutenance management
-    version: 1.0.0
-
 management:
   endpoints:
     web:
       exposure:
         include: health,info
-  endpoint:
-    health:
-      show-details: always
-
-logging:
-  level:
-    root: INFO
 
 app:
   jwt:

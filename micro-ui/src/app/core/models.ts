@@ -123,3 +123,177 @@ export interface Juror {
   university?: string;
   note?: string;
 }
+
+// ============== Soutenance Models ==============
+
+export type SoutenanceStatus = 
+  | 'DRAFT'
+  | 'SUBMITTED'
+  | 'DIRECTOR_APPROVED'
+  | 'DIRECTOR_REJECTED'
+  | 'SCHEDULED'
+  | 'RAPPORTEUR_REPORT_SUBMITTED'
+  | 'AUTHORIZED'
+  | 'COMPLETED'
+  | 'CANCELLED';
+
+export type SoutenanceResult = 
+  | 'TRES_HONORABLE_AVEC_FELICITATIONS'
+  | 'TRES_HONORABLE'
+  | 'HONORABLE'
+  | 'AJOURNE';
+
+export type JuryRole = 
+  | 'PRESIDENT'
+  | 'RAPPORTEUR'
+  | 'EXAMINATEUR'
+  | 'DIRECTEUR'
+  | 'CO_DIRECTEUR';
+
+export interface JuryMember {
+  id?: string;
+  name: string;
+  email: string;
+  university: string;
+  role: JuryRole;
+}
+
+export interface JuryMemberResponse {
+  id: string;
+  name: string;
+  email: string;
+  university: string;
+  role: JuryRole;
+}
+
+export interface SoutenanceResponse {
+  id: string;
+  doctorantAccountId?: string;
+  doctorantId?: string;
+  doctorantEmail?: string;
+  doctorantName?: string;
+  thesisTitle: string;
+  thesisSummary?: string;
+  thesisAbstract?: string;
+  status: SoutenanceStatus;
+  result?: SoutenanceResult;
+  requestedDateTime?: string;
+  scheduledDateTime?: string;
+  scheduledDate?: string;
+  location?: string;
+  desiredLocation?: string;
+  juryMembers?: JuryMemberResponse[];
+  jury?: JuryMember[];
+  directorComments?: string;
+  rapporteurReport?: string;
+  createdAt?: string;
+  updatedAt?: string;
+  // Prerequisites
+  prerequisitesValid?: boolean;
+  publicationsCount?: number;
+  conferencesCount?: number;
+  trainingHours?: number;
+  // Director approval
+  directorApproved?: boolean;
+  directorApprovalDate?: string;
+  // Rapporteur
+  allRapporteursFavorable?: boolean;
+  // Authorization
+  authorized?: boolean;
+  // 6-year limit
+  approachingSixYearLimit?: boolean;
+  initialEnrollmentDate?: string;
+  derogationApproved?: boolean;
+  // Document URLs
+  manuscriptUrl?: string;
+  antiPlagiarismReportUrl?: string;
+  publicationsReportUrl?: string;
+  trainingCertificatesUrl?: string;
+  handwrittenRequestUrl?: string;
+  attestationUrl?: string;
+  authorizationDocumentUrl?: string;
+  procesVerbalUrl?: string;
+}
+
+export interface CreateSoutenanceRequest {
+  thesisTitle: string;
+  thesisSummary?: string;
+  thesisAbstract?: string;
+  publicationsCount?: number;
+  conferencesCount?: number;
+  trainingHours?: number;
+  manuscriptUrl?: string;
+  antiPlagiarismReportUrl?: string;
+  publicationsReportUrl?: string;
+  trainingCertificatesUrl?: string;
+  handwrittenRequestUrl?: string;
+  desiredDateTime?: string;
+  desiredLocation?: string;
+  initialEnrollmentDate?: string;
+  derogationApproved?: boolean;
+}
+
+export interface UpdateSoutenanceStatusRequest {
+  status: SoutenanceStatus;
+  comments?: string;
+}
+
+export interface DirectorApprovalRequest {
+  approved: boolean;
+  comments?: string;
+}
+
+export interface ScheduleSoutenanceRequest {
+  scheduledDate: string;
+  location: string;
+}
+
+export interface JuryMemberRequest {
+  name: string;
+  email: string;
+  university: string;
+  role: JuryRole;
+}
+
+export interface UpdateJuryRequest {
+  juryMembers: JuryMemberRequest[];
+}
+
+export interface RapporteurReportRequest {
+  report: string;
+  recommendation: 'FAVORABLE' | 'DEFAVORABLE' | 'RESERVE';
+}
+
+export interface SetResultRequest {
+  result: SoutenanceResult;
+  comments?: string;
+}
+
+// ============== Notification Models ==============
+
+export type NotificationStatus = 'UNREAD' | 'READ' | 'ARCHIVED';
+export type NotificationType = 
+  | 'SOUTENANCE_SUBMITTED'
+  | 'SOUTENANCE_APPROVED'
+  | 'SOUTENANCE_REJECTED'
+  | 'SOUTENANCE_SCHEDULED'
+  | 'RAPPORTEUR_ASSIGNED'
+  | 'REPORT_SUBMITTED'
+  | 'SOUTENANCE_AUTHORIZED'
+  | 'SOUTENANCE_COMPLETED'
+  | 'GENERAL';
+
+export interface NotificationResponse {
+  id: string;
+  recipientId: string;
+  recipientAccountId?: string;
+  type: NotificationType;
+  title?: string;
+  subject?: string;
+  message?: string;
+  content?: string;
+  status: NotificationStatus;
+  metadata?: Record<string, any>;
+  createdAt: string;
+  readAt?: string;
+}

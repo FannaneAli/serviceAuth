@@ -20,16 +20,28 @@ import { TopControlsComponent } from './top-controls.component';
             <span class="nav-icon">D</span><span class="label">{{ 'nav.dashboard' | t }}</span>
           </a>
           <a *ngIf="role==='DOCTORANT'" routerLink="/doctorant" class="nav-chip" [attr.aria-label]="'nav.doctorant' | t">
-            <span class="nav-icon">Doc</span><span class="label">{{ 'nav.doctorant' | t }}</span>
+            <span class="nav-icon">👤</span><span class="label">{{ 'nav.doctorant' | t }}</span>
+          </a>
+          <a *ngIf="role==='DOCTORANT'" routerLink="/soutenances" class="nav-chip" [attr.aria-label]="'Soutenances'">
+            <span class="nav-icon">📚</span><span class="label">Soutenances</span>
           </a>
           <a *ngIf="role==='DIRECTEUR'" routerLink="/encadrant" class="nav-chip" [attr.aria-label]="'nav.encadrant' | t">
-            <span class="nav-icon">Enc</span><span class="label">{{ 'nav.encadrant' | t }}</span>
+            <span class="nav-icon">👨‍🏫</span><span class="label">{{ 'nav.encadrant' | t }}</span>
+          </a>
+          <a *ngIf="role==='DIRECTEUR'" routerLink="/director-soutenances" class="nav-chip" [attr.aria-label]="'Soutenances'">
+            <span class="nav-icon">📋</span><span class="label">Soutenances</span>
           </a>
           <a *ngIf="role==='ADMIN'" routerLink="/admin" class="nav-chip" [attr.aria-label]="'nav.admin' | t">
-            <span class="nav-icon">Adm</span><span class="label">{{ 'nav.admin' | t }}</span>
+            <span class="nav-icon">⚙️</span><span class="label">{{ 'nav.admin' | t }}</span>
+          </a>
+          <a *ngIf="role==='ADMIN' || isSuperuser()" routerLink="/review-soutenances" class="nav-chip" [attr.aria-label]="'Review Soutenances'">
+            <span class="nav-icon">✅</span><span class="label">Révision</span>
           </a>
           <a *ngIf="isSuperuser()" routerLink="/superuser" [queryParams]="{ section: 'overview' }" class="nav-chip" [attr.aria-label]="'nav.superuser' | t">
-            <span class="nav-icon">Sup</span><span class="label">{{ 'nav.superuser' | t }}</span>
+            <span class="nav-icon">🔑</span><span class="label">{{ 'nav.superuser' | t }}</span>
+          </a>
+          <a routerLink="/notifications" class="nav-chip" [attr.aria-label]="'Notifications'">
+            <span class="nav-icon">🔔</span><span class="label">Notifs</span>
           </a>
         </div>
         <button class="logout" (click)="logout()">

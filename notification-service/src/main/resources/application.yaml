@@ -58,6 +58,12 @@ logging:
 
 notification:
   mail:
+
+app:
+  jwt:
+    issuer: serviceAuth
+    secret: ${APP_JWT_SECRET:T1Yt9cV5yZ0R3Q0p4uHn8Aq2Lw7mN3sX6pB4dF1kJ9rE2tV8cH5qZ7yW0uM6nR3}
+    clock-skew-seconds: 60
     from: ${MAIL_FROM:docport@localhost}
 
 app:
